@@ -1060,7 +1060,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
     if (/^(?:je |j )?(?:suis |me sens )?(?:tres |un peu |vraiment )?(?:fatigu|creve|epuise|lessive|a plat|pas la forme)/.test(q) || /^energie basse/.test(q) ||
         /^(?:je |j )?(?:suis |me sens )?(?:tres |vraiment )?(?:en forme|en pleine forme|plein d energie|motive)/.test(q) || /^energie haute/.test(q)) {
       var low = /fatigu|creve|epuise|lessive|a plat|pas la forme|basse/.test(q), lvl = low ? 'basse' : 'haute';
-      before = ids(); var same = S.ctx.energie === lvl; S.ctx.energie = lvl; save();
+      before = ids(); var same = S.ctx.energie === lvl; S.ctx.energie = lvl; S.daily.checkin = todayISO(); save();
       out = pushedOut(before); P = buildPlan(S, planCtx()); ft = firstTask(P);
       return { warn: false, text: (same ? 'Énergie déjà sur ' + ENLBL[lvl].toLowerCase() + '. ' : 'Énergie réglée sur ' + ENLBL[lvl].toLowerCase() + '. ') +
         (ft ? 'Je commence par « ' + ft.title + ' ».' : 'Aucune tâche à planifier.') + (out.length ? ' Je repousse : ' + out.join(', ') + '.' : '') };
@@ -1225,7 +1225,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
     h += '<section class="panel"><h3 class="title">Comment fonctionne l’agent</h3><p class="sub">Il classe et planifie avec des règles fixes : mots-clés, dates, importance, urgence, énergie et créneaux. Ce n’est pas une vraie IA. Il apprend de tes corrections, sur cet appareil seulement.</p>' +
       '<p class="hint">' + (nl ? nl + ' mot' + (nl > 1 ? 's' : '') + ' retenu' + (nl > 1 ? 's' : '') + ' grâce à tes corrections.' : 'Rien retenu pour l’instant : corrige une catégorie ou une importance, et il s’en souviendra.') + '</p>' +
       (nl ? '<div class="btns">' + delBtn('unlearn', '', 'Lui faire tout oublier', true) + '</div>' : '') + '</section>';
-    h += '<p class="hint ver">Cadence · version 7 · tes données restent sur cet appareil</p>';
+    h += '<p class="hint ver">Cadence · version 8 · tes données restent sur cet appareil</p>';
     return h;
   }
 
