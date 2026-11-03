@@ -343,6 +343,9 @@ body { padding-block: 14px 150px; }
   @keyframes pop { from { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
 }
+
+input[type="email"], input[type="password"] { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 14px; min-height: 48px; padding: 0 14px; width: 100%; min-width: 0; }
+.btn[disabled] { opacity: .55; }
 </style>
 </head>
 <body>
@@ -456,7 +459,7 @@ body { padding-block: 14px 150px; }
     return ensure({});
   }
   var S = load();
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} cloudDirty(); }
 
   var tab = 'plan', notice = null, formErr = '', editing = null, formOpen = false, capOpen = false, deferred = null, swReg = null;
   var armKey = '', armTimer = null, PC = null, PLAN = null;
@@ -1252,7 +1255,7 @@ body { padding-block: 14px 150px; }
       '<section class="card"><h3>Ta journée commence à…</h3>' + row('start', ['06:00', '07:00', '08:00', '09:00', '10:00'].map(function (x) { return [x, x]; }), c.start) +
       '<h3>… et se termine vers…</h3>' + row('end', ends.map(function (x) { return [x, x]; }), c.end) +
       '<h3>Tu es le plus efficace…</h3>' + row('peak', [['matin', 'Le matin'], ['aprem', 'L’après-midi'], ['soir', 'Le soir']], c.peak) + '</section>' +
-      '<button class="btn primary big" data-act="obdone">C’est parti</button><p class="hint">Cadence fonctionne avec des règles simples, pas avec une vraie IA. Tu pourras tout changer dans Moi, Réglages.</p>';
+      '<button class="btn primary big" data-act="obdone">C’est parti</button><p class="hint">Cadence fonctionne avec des règles simples, pas avec une vraie IA. Tu pourras tout changer dans Moi, Réglages.</p>' + accountCard();
   }
   /* ---------- Capture rapide (bouton +) ---------- */
   var capErr = '';
@@ -1394,12 +1397,13 @@ body { padding-block: 14px 150px; }
     h += '<div class="tiles"><div class="tile"><b>' + st.cur + '</b><span>jour' + (st.cur > 1 ? 's' : '') + ' de suite</span></div><div class="tile"><b>' + wk + '</b><span>tâche' + (wk > 1 ? 's' : '') + ' cette semaine</span></div><div class="tile"><b>' + dur(fw) + '</b><span>de focus cette semaine</span></div></div>';
     h += '<p class="hint">Une série compte chaque jour où tu termines une tâche, fais une session de focus, coches une habitude ou notes une victoire.' + (st.best > st.cur ? ' Ton record : ' + st.best + ' jours.' : '') + '</p>';
     h += '<section class="card"><h3>Succès</h3><div class="badges">' + badges().map(function (b) { return '<div class="badge2' + (b[2] ? ' on' : '') + '"><b>' + esc(b[0]) + '</b><span>' + esc(b[1]) + '</span></div>'; }).join('') + '</div></section>';
+    h += accountCard();
     h += MORE.map(function (r) { return '<button class="mrow" data-act="tab" data-id="' + r[0] + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[r[0]] + '</svg><span><b>' + r[1] + '</b><small>' + r[2] + '</small></span></button>'; }).join('');
     var nl = Object.keys(S.learn.dom).length + Object.keys(S.learn.imp).length;
     h += '<section class="card"><h3>Comment Cadence range tes idées</h3><p class="sub">Il classe et planifie avec des règles fixes : mots-clés, dates, importance, urgence, énergie et créneaux. Ce n’est pas une vraie IA. Il apprend de tes corrections, sur cet appareil seulement.</p>' +
       '<p class="hint">' + (nl ? nl + ' mot' + (nl > 1 ? 's' : '') + ' retenu' + (nl > 1 ? 's' : '') + ' grâce à tes corrections.' : 'Rien retenu pour l’instant : change une catégorie ou une importance dans Tâches, et il s’en souviendra.') + '</p>' +
       (nl ? '<div class="btns">' + delBtn('unlearn', '', 'Tout lui faire oublier', true) + '</div>' : '') + '</section>';
-    h += '<p class="hint ver">Cadence · version 9 · tes données restent sur cet appareil</p>';
+    h += '<p class="hint ver">Cadence · version 10 · ' + (auth ? 'sauvegarde en ligne activée' : 'tes données restent sur cet appareil') + '</p>';
     return h;
   }
   /* ---------- Structure de la page ---------- */
@@ -1733,7 +1737,7 @@ body { padding-block: 14px 150px; }
     h += '<section class="panel"><h3 class="title">Application</h3>' + (standalone ? '<p class="sub">Cadence est installée sur cet appareil.</p>' :
       deferred ? '<p class="sub">Installe Cadence pour l’ouvrir depuis ton écran d’accueil.</p><div class="btns"><button class="btn primary" data-act="install">Installer l’application</button></div>' :
       '<p class="sub">Dans Chrome : menu ⋮ puis « Installer l’application » ou « Ajouter à l’écran d’accueil ».</p>') + '</section>';
-    h += '<section class="panel"><h3 class="title">Données</h3><p class="sub">Tout reste sur cet appareil. Fais une sauvegarde de temps en temps. Importer remplace tes données actuelles.</p>' +
+    h += '<section class="panel"><h3 class="title">Données</h3><p class="sub">Sans compte, tout reste sur cet appareil. Fais une sauvegarde de temps en temps. Importer remplace tes données actuelles.</p>' +
       '<div class="btns"><button class="btn" data-act="export">Exporter une sauvegarde</button><label class="btn" for="imp-file">Importer<input type="file" id="imp-file" accept="application/json,.json" hidden></label></div>' +
       (formErr && tab === 'settings' && /import/i.test(formErr) ? '<p class="err">' + esc(formErr) + '</p>' : '') +
       '<div class="btns">' + delBtn('blank', '', 'Tout vider') + '</div></section>';
@@ -1811,6 +1815,186 @@ body { padding-block: 14px 150px; }
     var f = {}; f[id] = ''; render(f);
   }
 
+  /* ---------- Compte et sauvegarde en ligne (Supabase, appels directs) ---------- */
+  var CLOUD_URL = 'https://brxynzbajlemciybghzw.supabase.co', CLOUD_KEY = 'sb_publishable_dgho_oVTcyYlD0Ve2Qvbzw_4yBNsO0r';
+  var CK = 'cadence.auth', CR = 'cadence.sync.r', CM = 'cadence.sync.m', CT = 'cadence.sync.t', CD = 'cadence.dirty';
+  var cloudOn = CLOUD_URL.indexOf('__') < 0 && CLOUD_KEY.indexOf('__') < 0 && CLOUD_KEY.length > 8;
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  var auth = null; try { auth = JSON.parse(lsGet(CK) || 'null'); if (!auth || !auth.rt || !auth.uid) auth = null; } catch (e) { auth = null; }
+  var acct = { busy: false, err: '', info: '' };
+  var sync = { st: 'idle', at: lsGet(CT) || '', err: '', conflict: null };
+  var lastSer = null, pushT = null, pushing = false, again = false, syncing = false, lastPull = 0, refreshing = null, retryT = null, chg = 0;
+
+  function ser() { var t = S.timer; S.timer = null; var j = JSON.stringify(S); S.timer = t; return j; }
+  function cloudDirty() {
+    if (!lastSer || !auth || !cloudOn) return;
+    var j = ser(); if (j === lastSer) return;
+    lastSer = j; chg++; lsSet(CD, '1'); lsSet(CM, new Date().toISOString());
+    if (sync.conflict) return;
+    clearTimeout(pushT); pushT = setTimeout(cloudPush, 2500);
+  }
+  function acctRender() { if ((tab === 'more' || !S.profile.done) && !capOpen && !editingField()) render(); }
+  function setSt(st, err) { sync.st = st; sync.err = err || ''; clearTimeout(retryT); if (st === 'err') retryT = setTimeout(function () { if (!auth) return; if (lsGet(CD) === '1') cloudPush(); else cloudSync(); }, 30000); if (st === 'ok') { sync.at = new Date().toISOString(); lsSet(CT, sync.at); } acctRender(); }
+
+  function raw(method, path, body, hdr) {
+    var h = { apikey: CLOUD_KEY, 'Content-Type': 'application/json' };
+    if (hdr) Object.keys(hdr).forEach(function (k) { h[k] = hdr[k]; });
+    return fetch(CLOUD_URL + path, { method: method, headers: h, body: body ? JSON.stringify(body) : undefined }).then(function (r) {
+      return r.text().then(function (t) {
+        var j = null; try { j = t ? JSON.parse(t) : null; } catch (e) {}
+        if (!r.ok) { var er = new Error((j && (j.msg || j.message || j.error_description || j.error)) || ('HTTP ' + r.status)); er.status = r.status; er.code = (j && (j.error_code || j.code)) || ''; throw er; }
+        return j;
+      });
+    }, function () { var er = new Error('network'); er.net = true; throw er; });
+  }
+  function setAuth(j, email) {
+    var u = j.user || {};
+    auth = { at: j.access_token, rt: j.refresh_token, exp: j.expires_at ? j.expires_at * 1000 : Date.now() + (j.expires_in || 3600) * 1000, email: u.email || email || (auth && auth.email) || '', uid: u.id || (auth && auth.uid) || '' };
+    lsSet(CK, JSON.stringify(auth));
+  }
+  function token() {
+    if (!auth) return Promise.reject(new Error('noauth'));
+    if (auth.exp - Date.now() > 60000) return Promise.resolve(auth.at);
+    if (refreshing) return refreshing;
+    refreshing = raw('POST', '/auth/v1/token?grant_type=refresh_token', { refresh_token: auth.rt }).then(function (j) { setAuth(j, auth.email); refreshing = null; return auth.at; }, function (er) {
+      refreshing = null;
+      if (!er.net && (er.status === 400 || er.status === 401 || er.status === 403)) cloudSignOutLocal('Ta session a expiré : reconnecte-toi. Tes données sont toujours sur cet appareil.');
+      throw er;
+    });
+    return refreshing;
+  }
+  function authed(method, path, body, hdr) {
+    return token().then(function (tk) { var h = Object.assign({}, hdr || {}); h.Authorization = 'Bearer ' + tk; return raw(method, path, body, h); });
+  }
+  function frErr(er) {
+    var m = String((er && er.message) || ''), c = String((er && er.code) || '');
+    if (er && er.net) return 'Pas de connexion internet.';
+    if (/invalid login|invalid_credentials/i.test(m + c)) return 'E-mail ou mot de passe incorrect.';
+    if (/already registered|user_already_exists|already been registered/i.test(m + c)) return 'Un compte existe déjà avec cet e-mail. Appuie sur « Se connecter ».';
+    if (/weak_password|at least 6|password should/i.test(m + c)) return 'Mot de passe trop court : 6 caractères minimum.';
+    if (/rate|too many/i.test(m + c) || (er && er.status === 429)) return 'Trop de tentatives. Réessaie dans quelques minutes.';
+    if (/validate_email|email.*invalid|invalid.*email|unable to validate/i.test(m + c)) return 'Adresse e-mail non valide.';
+    if (/signup.*disabled|signups not allowed/i.test(m + c)) return 'Les inscriptions sont désactivées.';
+    if (/not.*confirmed/i.test(m + c)) return 'Confirme d’abord ton e-mail.';
+    if (/api key|apikey/i.test(m)) return 'Clé du serveur refusée : réglage de l’appli à corriger.';
+    return 'Erreur : ' + m;
+  }
+
+  function pullRow() {
+    return authed('GET', '/rest/v1/cadence_state?select=data,updated_at').then(function (r) { return (Array.isArray(r) && r[0]) || null; });
+  }
+  function validData(d) { return !!(d && d.ctx && Array.isArray(d.tasks)); }
+  function applyRemote(row) {
+    lsSet('cadence.backup', JSON.stringify(S));
+    var tm = S.timer, n = ensure(row.data); n.timer = tm; S = n;
+    lsSet(CR, row.updated_at); lsSet(CD, null);
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+    lastSer = ser(); applyTheme(); resetAsk(); projOpen = null; projForm = false; projEdit = null; editing = null;
+    if (!S.timer) focusOpen = false;
+  }
+  function cloudSync() {
+    if (!auth || !cloudOn || syncing) return Promise.resolve();
+    syncing = true; lastPull = Date.now(); setSt('sync');
+    return pullRow().then(function (row) {
+      var L = lsGet(CR) || '', dirty = lsGet(CD) === '1';
+      if (!row || !validData(row.data)) { syncing = false; return cloudPush(); }
+      if (L && row.updated_at === L) { syncing = false; if (dirty) return cloudPush(); setSt('ok'); return; }
+      var fresh = !S.profile.done && !S.tasks.length && !S.history.length;
+      if (fresh || (L && !dirty)) { applyRemote(row); syncing = false; setSt('ok'); if (!editingField()) render(); return; }
+      syncing = false; sync.conflict = row; setSt('conflict');
+    }).catch(function (er) { syncing = false; if (auth) setSt('err', frErr(er)); });
+  }
+  function cloudPush() {
+    if (!auth || !cloudOn || sync.conflict) return Promise.resolve();
+    if (pushing) { again = true; return Promise.resolve(); }
+    pushing = true; setSt('sync');
+    var c0 = chg, sent = ser(), body = { user_id: auth.uid, data: JSON.parse(sent), updated_at: new Date().toISOString() };
+    return authed('POST', '/rest/v1/cadence_state?on_conflict=user_id', body, { Prefer: 'resolution=merge-duplicates,return=representation' }).then(function (r) {
+      var row = Array.isArray(r) ? r[0] : r;
+      if (row && row.updated_at) return row.updated_at;
+      return pullRow().then(function (x) { return x && x.updated_at; });
+    }).then(function (ua) {
+      pushing = false;
+      if (ua) lsSet(CR, ua);
+      if (chg === c0) lsSet(CD, null); else again = true;
+      setSt('ok');
+      if (again) { again = false; clearTimeout(pushT); pushT = setTimeout(cloudPush, 1500); }
+    }).catch(function (er) { pushing = false; again = false; if (auth) setSt('err', frErr(er)); });
+  }
+  function cloudSignOutLocal(msg) {
+    auth = null; lsSet(CK, null); lsSet(CR, null); lsSet(CD, null); lsSet(CM, null); lsSet(CT, null);
+    sync = { st: 'idle', at: '', err: '', conflict: null }; acct.info = msg || ''; acct.err = ''; acct.busy = false; clearTimeout(pushT);
+    render();
+  }
+  function cloudSignOut() {
+    var p = auth ? authed('POST', '/auth/v1/logout').catch(function () {}) : Promise.resolve();
+    cloudSignOutLocal('Tu es déconnecté. Tes données restent sur cet appareil.');
+    return p;
+  }
+  function cloudAuth(kind) {
+    var em = (document.getElementById('a-mail') || {}).value || '', pw = (document.getElementById('a-pass') || {}).value || '';
+    em = em.trim();
+    acct.info = '';
+    if (!/^\S+@\S+\.\S+$/.test(em)) { acct.err = 'Écris une adresse e-mail valide.'; render(); return; }
+    if (pw.length < 6) { acct.err = 'Le mot de passe doit faire au moins 6 caractères.'; render(); return; }
+    acct.busy = true; acct.err = ''; render();
+    raw('POST', kind === 'up' ? '/auth/v1/signup' : '/auth/v1/token?grant_type=password', { email: em, password: pw }).then(function (j) {
+      acct.busy = false;
+      if (!j || !j.access_token) { acct.info = 'Compte créé, mais il faut confirmer ton e-mail avant de te connecter : ouvre le message reçu, puis reviens ici.'; render(); return; }
+      setAuth(j, em); acct.err = ''; acct.info = '';
+      lsSet(CR, null); lsSet(CD, null); lastSer = ser();
+      var pa = document.getElementById('a-pass'); if (pa) pa.value = '';
+      sync = { st: 'sync', at: '', err: '', conflict: null }; render();
+      return cloudSync();
+    }).catch(function (er) { acct.busy = false; acct.err = frErr(er); render(); });
+  }
+  function cloudClick(a) {
+    if (a === 'acup') { cloudAuth('up'); return true; }
+    if (a === 'acsync') { lastPull = 0; cloudSync(); return true; }
+    if (a === 'acout') { cloudSignOut(); return true; }
+    if (a === 'acmine') { sync.conflict = null; cloudPush(); return true; }
+    if (a === 'actheirs') { var r = sync.conflict; sync.conflict = null; if (r) applyRemote(r); setSt('ok'); render(); return true; }
+    return false;
+  }
+  function accountCard() {
+    if (!cloudOn) return '';
+    var h;
+    if (!auth) {
+      var dis = acct.busy ? ' disabled' : '';
+      return '<section class="card"><h3>Mon compte</h3><p class="sub">Crée un compte pour sauvegarder tes données en ligne et les retrouver sur tous tes appareils.</p>' +
+        '<form class="form" id="acform" autocomplete="on"><label class="f" for="a-mail">E-mail<input type="email" id="a-mail" data-keep autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></label>' +
+        '<label class="f" for="a-pass">Mot de passe (6 caractères minimum)<input type="password" id="a-pass" data-keep autocomplete="current-password"></label>' +
+        (acct.err ? '<p class="err" role="alert">' + esc(acct.err) + '</p>' : '') + (acct.info ? '<p class="sub" role="status">' + esc(acct.info) + '</p>' : '') +
+        (acct.busy ? '<p class="sub" role="status">Un instant…</p>' : '') +
+        '<div class="btns"><button type="submit" class="btn primary"' + dis + '>Se connecter</button><button type="button" class="btn" data-act="acup"' + dis + '>Créer mon compte</button></div></form>' +
+        '<p class="hint">Tes données sont stockées chez Supabase (région Europe), liées à ton e-mail. Sans compte, tout reste sur cet appareil.</p></section>';
+    }
+    var st = sync.st, tm = '';
+    try { if (sync.at) tm = new Date(sync.at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); } catch (e) {}
+    var line = st === 'sync' ? 'Synchronisation…' : st === 'err' ? 'Pas synchronisé : ' + esc(sync.err) + ' Nouvel essai automatique.' : st === 'conflict' ? '' : tm ? 'Sauvegardé en ligne à ' + tm + '.' : 'Connecté.';
+    h = '<section class="card"><h3>Mon compte</h3><p class="sub">Connecté : <b>' + esc(auth.email) + '</b></p>';
+    if (sync.conflict) {
+      h += '<p class="err" role="alert">Cet appareil et ton compte contiennent des données différentes. Laquelle garder ?</p>' +
+        '<div class="btns"><button class="btn primary" data-act="acmine">Garder cet appareil</button><button class="btn" data-act="actheirs">Prendre celles du compte</button></div>' +
+        '<p class="hint">Si tu prends celles du compte, une copie de cet appareil est gardée de côté.</p>';
+    } else {
+      h += '<p class="' + (st === 'err' ? 'err' : 'sub') + '" role="status">' + line + '</p>' +
+        '<div class="btns"><button class="btn" data-act="acsync">Synchroniser maintenant</button><button class="btn" data-act="acout">Se déconnecter</button></div>';
+    }
+    return h + '</section>';
+  }
+  function cloudBoot() {
+    lastSer = ser();
+    if (auth && cloudOn) cloudSync();
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!auth || !cloudOn) return;
+    if (document.hidden) { if (lsGet(CD) === '1' && !sync.conflict) { clearTimeout(pushT); cloudPush(); } }
+    else if (Date.now() - lastPull > 20000) cloudSync();
+  });
+  window.addEventListener('online', function () { if (auth && cloudOn) cloudSync(); });
+
   document.addEventListener('submit', function (e) {
     e.preventDefault();
     var id = e.target.id;
@@ -1818,6 +2002,7 @@ body { padding-block: 14px 150px; }
     else if (id === 'capform') submitCap();
     else if (id === 'winform') addWin();
     else if (id === 'projform') submitProject();
+    else if (id === 'acform') cloudAuth('in');
   });
 
   document.addEventListener('click', function (e) {
@@ -1830,6 +2015,7 @@ body { padding-block: 14px 150px; }
       armKey = key; clearTimeout(armTimer); armTimer = setTimeout(function () { armKey = ''; render(); }, 4000); render(); return false;
     }
     if (a === 'tab') { if (id === 'projects' && tab === 'projects') projOpen = null; tab = id; capOpen = false; formErr = ''; catFor = ''; projForm = false; projEdit = null; notice = null; render(); window.scrollTo(0, 0); return; }
+    if (cloudClick(a)) return;
     if (a === 'dismiss') { notice = null; render(); return; }
     if (a === 'capopen') { capOpen = true; capErr = ''; render(); var ct = document.getElementById('cap-text'); if (ct) { try { ct.focus(); } catch (e) {} } return; }
     if (a === 'capclose') { capOpen = false; capErr = ''; render(); return; }
@@ -2105,6 +2291,7 @@ body { padding-block: 14px 150px; }
   focusOpen = !!S.timer;
   save();
   render();
+  cloudBoot();
   try { if (/[?&]add=1/.test(location.search) && S.profile.done) { tab = 'plan'; capOpen = true; render(); var ad = document.getElementById('cap-text'); if (ad) ad.focus(); } } catch (e) {}
   var sec = 0;
   setInterval(function () { timerTick(); sec++; if (sec % 30 === 0) tick(); }, 1000);
