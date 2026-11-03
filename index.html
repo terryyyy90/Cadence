@@ -351,6 +351,15 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
 .card.prog.slim { padding: 14px 16px; display: grid; gap: 8px; }
 .card.prog.slim h3 { margin: 0; }
 .card.nb h3 { margin: 0 0 4px; }
+.card.prog.slim { grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+.mono, .t { white-space: nowrap; }
+.pick .mono { flex: none; }
+.panel.fold { padding: 0; display: block; }
+.panel.fold > summary { list-style: none; cursor: pointer; padding: 16px 18px; font-weight: 700; font-size: 17px; display: flex; justify-content: space-between; align-items: center; min-height: 52px; }
+.panel.fold > summary::-webkit-details-marker { display: none; }
+.panel.fold > summary::after { content: ""; width: 9px; height: 9px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); margin: -4px 4px 0 0; transition: transform .15s; }
+.panel.fold[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
+.panel.fold > .fbody { padding: 0 18px 18px; display: grid; gap: 12px; }
 </style>
 </head>
 <body>
@@ -731,7 +740,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     var rm = toMin(S.ctx.review);
     if (n.review && pc.nowM >= rm && pc.nowM < rm + 120) {
       var left = S.tasks.filter(function (t) { return !t.done; }).length, dn = S.tasks.filter(function (t) { return t.done; }).length;
-      once('review', 'Revue du soir', dn + ' faite(s), ' + left + ' restante(s). Prépare demain en 2 minutes.');
+      once('review', 'Revue du soir', dn + (dn > 1 ? ' faites, ' : ' faite, ') + left + (left > 1 ? ' restantes' : ' restante') + '. Prépare demain en 2 minutes.');
     }
     if (tab === 'plan' && !capOpen && !editingField() && !(S.timer && focusOpen)) render();
   }
@@ -873,7 +882,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     if (S.lastOpen < td) {
       var r = (S.closed !== S.lastOpen) ? closeDay(S.lastOpen) : null;
       S.ctx.energie = 'moyenne';
-      if (r && (r.done || r.rest)) notice = { warn: false, text: 'Nouvelle journée : ' + r.done + ' tâche(s) faite(s) hier, ' + r.rest + ' reportée(s).' };
+      if (r && (r.done || r.rest)) notice = { warn: false, text: 'Nouvelle journée : ' + r.done + (r.done > 1 ? ' tâches faites' : ' tâche faite') + ' hier, ' + r.rest + (r.rest > 1 ? ' reportées.' : ' reportée.') };
       S.lastOpen = td; resetAsk(); save();
     }
   }
@@ -1174,7 +1183,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
   function heroHtml(P, pc) {
     if (S.timer) return focusOpen ? '' : timerCard();
     var win = ask.win || 0, list = suggestList(P, pc, win), openN = S.tasks.filter(function (t) { return !t.done; }).length;
-    var winRow = '<div class="winrow"><span>J’ai</span>' + [15, 30, 60].map(function (m) { return '<button class="chipb' + (win === m ? ' on' : '') + '" data-act="win" data-v="' + m + '">' + m + ' min</button>'; }).join('') + (win ? '<button class="chipb" data-act="askall">Sans limite</button>' : '') + '</div>';
+    var winRow = '<div class="winrow"><span>Je n’ai que</span>' + [15, 30, 60].map(function (m) { return '<button class="chipb' + (win === m ? ' on' : '') + '" data-act="win" data-v="' + m + '">' + m + ' min</button>'; }).join('') + (win ? '<button class="chipb" data-act="askall">Sans limite</button>' : '') + '</div>';
     if (!list.length) {
       if (!S.tasks.length) return '<section class="hero empty"><p class="eyebrow">Ta journée</p><h2>Vide ta tête, je range tout.</h2><p class="hsub">Écris ce que tu as à faire, une idée par ligne. Je trouve la catégorie, la durée et la priorité.</p><button class="btn light big" data-act="capopen">Ajouter mes premières tâches</button></section>';
       if (!openN) return '<section class="hero done"><p class="eyebrow">Bravo</p><h2>Tout est fait.</h2><p class="hsub">Savoure. Tu peux noter une victoire ci-dessous, ou ajouter une idée avec le bouton +.</p></section>';
@@ -1215,7 +1224,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
       if (shown > 3) rest += row; else top += row;
     });
     var h = '<section class="group"><div class="row"><h3 class="gt">' + (pc.tomorrow ? 'Plan de demain' : 'Ton plan du jour') + '</h3><span class="mono sub">' + fmt(pc.start) + '–' + fmt(pc.end) + '</span></div><ol class="tl">' + top + '</ol>';
-    if (nrest) h += '<details class="rest"><summary>Voir le reste · ' + nrest + ' tâche' + (nrest > 1 ? 's' : '') + '</summary><ol class="tl">' + rest + '</ol></details>';
+    if (nrest) h += '<details class="rest" data-k="rest"' + foldOpen('rest', false) + '><summary>Voir le reste · ' + nrest + ' tâche' + (nrest > 1 ? 's' : '') + '</summary><ol class="tl">' + rest + '</ol></details>';
     return h + '</section>';
   }
   function eveningCard(pc) {
@@ -1234,7 +1243,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     if (!pc.tomorrow) h += '<div class="energy"><span>Mon énergie</span><div class="seg sm">' + [['basse', 'Basse'], ['moyenne', 'Normale'], ['haute', 'Haute']].map(function (e) {
       return '<button class="' + (S.ctx.energie === e[0] ? 'on' : '') + '" data-act="energy" data-v="' + e[0] + '">' + e[1] + '</button>'; }).join('') + '</div></div>';
     h += heroHtml(P, pc);
-    h += notifBanner();
+    h += updBanner() + notifBanner();
     if (S.tasks.length) h += progressCard(P, pc);
     h += planList(P, pc);
     var c2 = coach(P, pc).filter(function (m) { return m.tone === 'warn'; }).slice(0, 2);
@@ -1256,11 +1265,11 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     var c = S.ctx, ends = ['17:00', '18:00', '19:00', '20:00', '22:00'].filter(function (x) { return toMin(x) >= toMin(c.start) + 240; });
     if (!ends.length) ends = ['22:00'];
     function row(f, opts, cur) { return '<div class="seg">' + opts.map(function (o) { return '<button type="button" class="' + (o[0] === cur ? 'on' : '') + '" data-act="obsel" data-f="' + f + '" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
-    return '<section class="hero"><p class="eyebrow">Bienvenue</p><h2>Ton assistant d’organisation.</h2><p class="hsub">Écris tes idées, Cadence les range, planifie ta journée et t’aide à te concentrer. Tout reste sur ton téléphone. Trois réglages pour commencer :</p></section>' +
+    return '<section class="hero"><p class="eyebrow">Bienvenue</p><h2>Ton assistant d’organisation.</h2><p class="hsub">Écris tes idées, Cadence les range, planifie ta journée et t’aide à te concentrer. Tout reste sur ton téléphone, sauf si tu crées un compte. Trois réglages pour commencer.</p></section>' +
       '<section class="card"><h3>Ta journée commence à…</h3>' + row('start', ['06:00', '07:00', '08:00', '09:00', '10:00'].map(function (x) { return [x, x]; }), c.start) +
       '<h3>… et se termine vers…</h3>' + row('end', ends.map(function (x) { return [x, x]; }), c.end) +
       '<h3>Tu es le plus efficace…</h3>' + row('peak', [['matin', 'Le matin'], ['aprem', 'L’après-midi'], ['soir', 'Le soir']], c.peak) + '</section>' +
-      '<button class="btn primary big" data-act="obdone">C’est parti</button><p class="hint">Cadence fonctionne avec des règles simples, pas avec une vraie IA. Tu pourras tout changer dans Moi, Réglages.</p>' + accountCard();
+      '<button class="btn primary big" data-act="obdone">C’est parti</button><p class="hint">Cadence fonctionne avec des règles simples, pas avec une vraie IA. Tu pourras tout changer dans Moi, Réglages.</p>' + welcomeAccount();
   }
   /* ---------- Capture rapide (bouton +) ---------- */
   var capErr = '';
@@ -1389,7 +1398,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     for (var i = 0; i < 7; i++) { var dm = focusMinOn(addDays(w0, i)); vals.push(dm); tot += dm; if (dm > mx) mx = dm; }
     vals.forEach(function (v, i2) { bars += '<div class="' + (addDays(w0, i2) === pc.today ? 'hot' : '') + '" style="height:' + Math.max(3, Math.round(v / mx * 100)) + '%" title="' + v + ' min"></div>'; labs += '<span>' + DAYLET[i2] + '</span>'; });
     var sess = S.flog.filter(function (e) { return e.d === pc.today && e.min >= 5; }).length;
-    h += '<section class="card"><div class="row"><h3>Ton focus</h3><span class="mono sub">' + dur(focusMinOn(pc.today)) + ' aujourd’hui</span></div><p class="sub">' + sess + ' session' + (sess > 1 ? 's' : '') + ' aujourd’hui · ' + dur(tot) + ' cette semaine</p><div class="hist">' + bars + '</div><div class="hlab">' + labs + '</div></section>';
+    h += '<section class="card"><div class="row"><h3>Ton focus</h3><span class="mono sub">' + dur(focusMinOn(pc.today)) + ' aujourd’hui</span></div><p class="sub">' + sess + ' session' + (sess > 1 ? 's' : '') + ' aujourd’hui · ' + dur(tot) + ' cette semaine</p>' + (tot ? '<div class="hist">' + bars + '</div><div class="hlab">' + labs + '</div>' : '<p class="hint">Lance une session : ton graphique de la semaine apparaîtra ici.</p>') + '</section>';
     h += '<section class="card"><h3>Comment ça marche</h3><p class="sub">Une session de concentration (25 min par défaut), puis une pause de 5 min. Toutes les 4 sessions, une longue pause de 15 min. Pas envie de commencer ? Lance 2 minutes seulement : le plus dur, c’est de démarrer.</p></section>';
     return h;
   }
@@ -1398,7 +1407,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
   function viewMe() {
     var L = levelInfo(), st = streakInfo(), w0 = weekStart(PC.today), wk = S.history.filter(function (e) { return e.d >= w0; }).length, fw = 0;
     S.flog.forEach(function (e) { if (e.d >= w0) fw += e.min; });
-    var h = noticeHtml() + '<section class="hero me"><p class="eyebrow">Niveau ' + L.n + '</p><h2>' + esc(L.name) + '</h2><div class="bar light"><i style="width:' + L.pct + '%"></i></div><p class="hsub">' + L.xp + ' points' + (L.hi ? ' · encore ' + (L.hi - L.xp) + ' pour le niveau suivant' : ' · niveau maximum') + '</p></section>';
+    var h = updBanner() + noticeHtml() + '<section class="hero me"><p class="eyebrow">Niveau ' + L.n + '</p><h2>' + esc(L.name) + '</h2><div class="bar light"><i style="width:' + L.pct + '%"></i></div><p class="hsub">' + L.xp + ' points' + (L.hi ? ' · encore ' + (L.hi - L.xp) + ' pour le niveau suivant' : ' · niveau maximum') + '</p></section>';
     h += '<div class="tiles"><div class="tile"><b>' + st.cur + '</b><span>jour' + (st.cur > 1 ? 's' : '') + ' de suite</span></div><div class="tile"><b>' + wk + '</b><span>tâche' + (wk > 1 ? 's' : '') + ' cette semaine</span></div><div class="tile"><b>' + dur(fw) + '</b><span>de focus cette semaine</span></div></div>';
     h += '<p class="hint">Une série compte chaque jour où tu termines une tâche, fais une session de focus, coches une habitude ou notes une victoire.' + (st.best > st.cur ? ' Ton record : ' + st.best + ' jours.' : '') + '</p>';
     h += '<section class="card"><h3>Succès</h3><div class="badges">' + badges().map(function (b) { return '<div class="badge2' + (b[2] ? ' on' : '') + '"><b>' + esc(b[0]) + '</b><span>' + esc(b[1]) + '</span></div>'; }).join('') + '</div></section>';
@@ -1408,7 +1417,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     h += '<section class="card"><h3>Comment Cadence range tes idées</h3><p class="sub">Il classe et planifie avec des règles fixes : mots-clés, dates, importance, urgence, énergie et créneaux. Ce n’est pas une vraie IA. Il apprend de tes corrections, sur cet appareil seulement.</p>' +
       '<p class="hint">' + (nl ? nl + ' mot' + (nl > 1 ? 's' : '') + ' retenu' + (nl > 1 ? 's' : '') + ' grâce à tes corrections.' : 'Rien retenu pour l’instant : change une catégorie ou une importance dans Tâches, et il s’en souviendra.') + '</p>' +
       (nl ? '<div class="btns">' + delBtn('unlearn', '', 'Tout lui faire oublier', true) + '</div>' : '') + '</section>';
-    h += '<p class="hint ver">Cadence · version 11 · ' + (auth ? 'sauvegarde en ligne activée' : 'tes données restent sur cet appareil') + '</p>';
+    h += '<p class="hint ver">Cadence · version ' + APP_VER + ' · ' + (auth ? 'sauvegarde en ligne activée' : 'tes données restent sur cet appareil') + '</p>';
     return h;
   }
   /* ---------- Structure de la page ---------- */
@@ -1499,7 +1508,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
       var x = b[d], tr = !!S.life.track[d], neg = tr && x.n === 0 && x.hab === 0;
       return '<div class="item"><div class="line"><button class="star" aria-pressed="' + tr + '" aria-label="Suivre ' + esc(d) + '" data-act="dtrack" data-id="' + esc(d) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></button>' +
         '<div class="cat"><span>' + esc(d) + '</span><div class="bar"><i style="width:' + Math.round(x.min / mx * 100) + '%"></i></div><span class="mono">' + dur(x.min) + '</span></div></div>' +
-        '<p class="hint">' + x.n + ' faite(s) · ' + x.hab + ' habitude(s) · ' + x.open + ' à faire</p>' +
+        '<p class="hint">' + x.n + (x.n > 1 ? ' faites' : ' faite') + ' · ' + x.hab + (x.hab > 1 ? ' habitudes' : ' habitude') + ' · ' + x.open + ' à faire</p>' +
         (neg ? '<p class="alert">Rien depuis 7 jours' + (x.open ? '' : ' et rien de prévu') + '.</p><div class="btns"><button class="btn small" data-act="domadd" data-id="' + esc(d) + '">Ajouter une action</button></div>' : '') + '</div>';
     }).join('') + '</section>';
     return h;
@@ -1518,7 +1527,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
         var ps = S.projects.filter(function (p) { return p.oid === o.id; }), pc = objPct(o);
         return '<div class="item"><div class="row"><h3 class="' + (o.done ? 'done-t' : '') + '">' + esc(o.text) + '</h3>' + (pc === null ? '' : '<span class="pct">' + pc + ' %</span>') + '</div>' +
           (pc === null ? '' : '<div class="bar"><i style="width:' + pc + '%"></i></div>') +
-          '<div class="chips">' + (o.dom ? '<span>' + esc(o.dom.toLowerCase()) + '</span>' : '') + '<span>' + ps.length + ' projet(s)</span></div>' +
+          '<div class="chips">' + (o.dom ? '<span>' + esc(o.dom.toLowerCase()) + '</span>' : '') + '<span>' + ps.length + (ps.length > 1 ? ' projets' : ' projet') + '</span></div>' +
           ps.map(function (p) { return '<p class="lead">→ ' + esc(p.name) + ' · ' + pct(p) + ' % · ' + PSTAT[p.status].toLowerCase() + '</p>'; }).join('') +
           '<div class="btns"><button class="btn small" data-act="ogtog" data-id="' + o.id + '">' + (o.done ? 'Rouvrir' : 'Atteint') + '</button>' + delBtn('odel', o.id, 'Retirer', true) + '</div></div>';
       }).join('') + '</section>';
@@ -1609,7 +1618,8 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     eventsFor(day).forEach(function (e) { ev += Math.max(0, toMin(e.end) - toMin(e.start)); });
     return Math.max(30, win - ev);
   }
-  function viewStats() {
+  function viewStats() { return foldStats(viewStats0()); }
+  function viewStats0() {
     var td = PC.today, ws = weekStart(td), H = S.history, wk = H.filter(function (e) { return e.d >= ws; });
     var open = S.tasks.filter(function (t) { return !t.done; }), done = S.tasks.filter(function (t) { return t.done; });
     var h = '<section class="group"><p class="eyebrow">' + esc(dayLabel(td, true)) + '</p><h2>Ton bilan</h2></section>' + noticeHtml();
@@ -1666,7 +1676,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     h += '<section class="panel"><div class="cols"><div><p class="eyebrow">Tâches faites</p><p class="clock mono">' + wk.length + '</p></div><div><p class="eyebrow">Temps abattu</p><p class="clock mono">' + dur(mins) + '</p></div><div><p class="eyebrow">Jours actifs</p><p class="clock mono">' + streak + '</p></div></div><p class="hint">Un jour sans tâche terminée ne casse pas ta série.</p></section>';
     var L = learn();
     h += '<section class="panel"><h3 class="title">Ton rythme</h3>';
-    if (!L) h += '<p class="sub">Cadence apprend quand tu termines tes tâches. Encore ' + (8 - H.length) + ' tâche(s) terminée(s) pour une première analyse.</p>';
+    if (!L) h += '<p class="sub">Cadence apprend quand tu termines tes tâches. Encore ' + (8 - H.length) + (8 - H.length > 1 ? ' tâches terminées' : ' tâche terminée') + ' pour une première analyse.</p>';
     else {
       var mxh = 1; for (var i = 6; i <= 22; i++) mxh = Math.max(mxh, L.cnt[i]);
       h += '<div class="hist">';
@@ -1694,7 +1704,8 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     return h;
   }
 
-  function viewSettings() {
+  function viewSettings() { return foldSettings(viewSettings0()); }
+  function viewSettings0() {
     var c = S.ctx, n = S.settings.notif, h = '<section class="group"><p class="eyebrow">Réglages</p><h2>Ta façon de travailler</h2></section>' + noticeHtml();
     h += '<section class="panel"><h3 class="title">Ma journée</h3><div class="form">' +
       '<div class="cols"><label class="f" for="c-start">Je commence à<input type="time" id="c-start" data-ctx="start" value="' + esc(c.start) + '"></label><label class="f" for="c-end">Je termine à<input type="time" id="c-end" data-ctx="end" value="' + esc(c.end) + '"></label></div>' +
@@ -1994,6 +2005,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
   function cloudClick(a) {
     if (a === 'acup') { cloudAuth('up'); return true; }
     if (a === 'acforgot') { cloudForgot(); return true; }
+    if (a === 'acopen') { acct.open = true; render(); return true; }
     if (a === 'rcclose') { recov = null; render(); return true; }
     if (a === 'acsync') { lastPull = 0; cloudSync(); return true; }
     if (a === 'acout') { cloudSignOut(); return true; }
@@ -2030,6 +2042,7 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
   }
   function cloudBoot() {
     lastSer = ser(); recoveryInit(); if (recov || acct.err) render();
+    updCheck();
     if (auth && cloudOn) cloudSync();
   }
   document.addEventListener('visibilitychange', function () {
@@ -2070,8 +2083,62 @@ input[type="email"], input[type="password"] { font: inherit; color: var(--ink); 
     if (a === 'notifon') { try { Notification.requestPermission().then(function () { render(); }); } catch (e) { render(); } return true; }
     if (a === 'notifno') { S.settings.nbanner = true; save(); render(); return true; }
     if (a === 'capchip') { capChip(b.dataset.g, +b.dataset.v); return true; }
+    if (a === 'updnow') { updNow(); return true; }
     return false;
   }
+
+  /* ---------- v12 : sections repliables, accueil allégé ---------- */
+  var FOLD = {};
+  function foldOpen(k, dflt) { var o = (k in FOLD) ? FOLD[k] : dflt; return o ? ' open' : ''; }
+  function foldify(html, openList) {
+    return html.replace(/<section class="panel"><h3 class="title">([^<]+)<\/h3>([\s\S]*?)<\/section>/g, function (m, t, body) {
+      var k = 'f:' + t;
+      return '<details class="panel fold" data-k="' + esc(k) + '"' + foldOpen(k, openList.indexOf(t) >= 0) + '><summary>' + t + '</summary><div class="fbody">' + body + '</div></details>';
+    });
+  }
+  function foldStats(html) {
+    var a = html.indexOf('<section class="group"><p class="eyebrow">Semaine du');
+    if (a > 0) {
+      var e1 = html.indexOf('</section>', a) + 10, e2 = html.indexOf('</section>', e1) + 10, seg = html.slice(a, e2);
+      var rest = html.slice(0, a) + html.slice(e2), b = rest.indexOf('<section class="panel"><h3 class="title">Revue du soir');
+      if (b > 0 && e2 > e1) html = rest.slice(0, b) + seg + rest.slice(b); else html = rest.slice(0, 0) + html;
+    }
+    return foldify(html, ['Revue du soir · 2 minutes', 'Focus cette semaine']).replace('<details class="panel"><summary>Charge des 7 prochains jours', '<details class="panel" data-k="charge"' + foldOpen('charge', false) + '><summary>Charge des 7 prochains jours');
+  }
+  function foldSettings(html) { return foldify(html, ['Ma journée']); }
+  function welcomeAccount() {
+    if (!cloudOn || auth) return '';
+    if (acct.open || acct.err || acct.info) return accountCard();
+    return '<div class="btns"><button class="btn ghost" data-act="acopen">J’ai déjà un compte</button></div>';
+  }
+  document.addEventListener('toggle', function (e) { var t = e.target; if (t && t.dataset && t.dataset.k) FOLD[t.dataset.k] = !!t.open; }, true);
+  function pl(n, one, many) { return n + ' ' + (n > 1 ? many : one); }
+
+  /* ---------- v12 : détection d’une nouvelle version ---------- */
+  var APP_VER = 12, updVer = 0, updT = 0;
+  function updCheck() {
+    try {
+      if (navigator.onLine === false || Date.now() - updT < 60000) return; updT = Date.now();
+      fetch(location.pathname + '?chk=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+        var m = /var APP_VER = (\d+)/.exec(t || '');
+        if (m && +m[1] > APP_VER && +m[1] !== updVer) { updVer = +m[1]; if (!editingField() && !capOpen && !(S.timer && focusOpen)) render(); }
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  function updBanner() {
+    if (!updVer) return '';
+    return '<section class="card nb"><h3>Nouvelle version disponible</h3><p class="sub">Appuie sur « Mettre à jour » pour passer à la version ' + updVer + '. Tes données sont conservées.</p><div class="btns"><button class="btn primary" data-act="updnow">Mettre à jour</button></div></section>';
+  }
+  function updNow() {
+    function go() { location.replace(location.pathname + '?v=' + updVer); }
+    try {
+      var p = [];
+      if (window.caches) p.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) p.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (x) { return x.unregister(); })); }));
+      Promise.all(p).then(go, go);
+    } catch (e) { go(); }
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) updCheck(); });
 
   document.addEventListener('submit', function (e) {
     e.preventDefault();
