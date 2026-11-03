@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-<meta name="theme-color" content="#0B6B73">
+<meta name="theme-color" content="#5B4BFF">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cadence">
@@ -18,25 +18,23 @@
 <style>
 /* Layout: une colonne de lecture (720px), clair et épuré. Une carte d'action unique en haut d'Aujourd'hui, cases rondes pour terminer d'un tap, navigation fixe en bas à 5 onglets. */
 :root {
-  --bg: #F6F5F1; --surface: #FFFFFF; --soft: #EFEDE7; --ink: #15171C; --muted: #646A73; --line: #E7E4DC;
-  --accent: #0B6B73; --accent-ink: #FFFFFF; --accent-soft: #E2F0F1;
-  --warn: #8A5200; --warn-soft: #FBF0DC; --bad: #B3261E; --ok: #1F7A4D;
-  --shadow: 0 0 0 1px var(--line);
+  --bg: #F5F3FF; --surface: #FFFFFF; --soft: #EEEBFB; --ink: #17142B; --muted: #6B6785; --line: #E6E2F6;
+  --accent: #5B4BFF; --accent-ink: #FFFFFF; --accent-soft: #E9E6FF;
+  --warn: #B45309; --warn-soft: #FEF3C7; --bad: #D92D4B; --ok: #0E9F6E;
+  --streak-bg: #FFF1E6; --streak-ink: #E8590C;
+  --grad: linear-gradient(135deg, #5B4BFF 0%, #8B5CF6 55%, #EC4899 135%); --grad2: linear-gradient(135deg, #12B981, #2E9BE6);
+  --shadow: 0 1px 2px rgba(40, 30, 120, .05), 0 10px 26px -14px rgba(40, 30, 120, .22), 0 0 0 1px var(--line);
   --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0C151A; --surface: #121F26; --soft: #1C2D35; --ink: #E6EEF1; --muted: #93A7B0; --line: #243640;
-    --accent: #5CC8CF; --accent-ink: #06262A; --accent-soft: #123940; --warn: #F0B45A; --warn-soft: #33260F; --bad: #F2877F; --ok: #62C48F;
-    --shadow: 0 0 0 1px var(--line); color-scheme: dark;
+    --bg: #0F0D1F; --surface: #1A1733; --soft: #26224A; --ink: #EEEBFF; --muted: #A29DC4; --line: #2E2A57; --accent: #8B7CFF; --accent-ink: #0F0D1F; --accent-soft: #28235A; --warn: #F0B45A; --warn-soft: #33260F; --bad: #FF8A9B; --ok: #4ADE9F; --streak-bg: #3A2412; --streak-ink: #FFA35C; --shadow: 0 0 0 1px var(--line); color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0C151A; --surface: #121F26; --soft: #1C2D35; --ink: #E6EEF1; --muted: #93A7B0; --line: #243640;
-  --accent: #5CC8CF; --accent-ink: #06262A; --accent-soft: #123940; --warn: #F0B45A; --warn-soft: #33260F; --bad: #F2877F; --ok: #62C48F;
-  --shadow: 0 0 0 1px var(--line); color-scheme: dark;
+  --bg: #0F0D1F; --surface: #1A1733; --soft: #26224A; --ink: #EEEBFF; --muted: #A29DC4; --line: #2E2A57; --accent: #8B7CFF; --accent-ink: #0F0D1F; --accent-soft: #28235A; --warn: #F0B45A; --warn-soft: #33260F; --bad: #FF8A9B; --ok: #4ADE9F; --streak-bg: #3A2412; --streak-ink: #FFA35C; --shadow: 0 0 0 1px var(--line); color-scheme: dark;
 }
 :root[data-theme="light"] { color-scheme: light; }
 * { box-sizing: border-box; }
@@ -66,16 +64,6 @@ small.sub { display: block; font-size: 13px; font-weight: 400; }
 .iconbtn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); border-top: 1px solid var(--line); display: flex; gap: 2px; padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
-.nav button { flex: 1; min-width: 0; display: grid; justify-items: center; gap: 3px; min-height: 54px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 600; cursor: pointer; border-radius: 12px; padding: 5px 0; }
-.nav button[aria-current="page"] { color: var(--accent); }
-.nav button[aria-current="page"] svg { stroke-width: 2.3; }
-.nav svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.fab { position: fixed; right: max(18px, env(safe-area-inset-right, 0px)); bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 7; width: 58px; height: 58px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; display: grid; place-items: center; box-shadow: 0 6px 18px rgba(0, 0, 0, .25); }
-.fab svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
-.scrim { position: fixed; inset: 0; z-index: 8; background: rgba(0, 0, 0, .42); border: 0; padding: 0; }
-.sheet { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 9; max-height: 88vh; overflow-y: auto; background: var(--surface); border-radius: 0 0 22px 22px; padding-block: 18px 20px; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); box-shadow: 0 10px 30px rgba(0, 0, 0, .3); }
-.sheet .in { max-width: 720px; margin: 0 auto; display: grid; gap: 14px; }
 
 .summary { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); font-size: 14px; }
 .summary b { color: var(--ink); font-weight: 600; }
@@ -86,7 +74,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .panel.focus .eyebrow, .panel.focus .why { color: var(--accent-ink); opacity: .85; }
 .panel.focus .btn { background: rgba(255, 255, 255, .18); color: var(--accent-ink); }
 .panel.focus .btn.primary { background: var(--accent-ink); color: var(--accent); }
-.panel.hero { background: var(--accent); color: var(--accent-ink); padding: 22px 20px; gap: 14px; }
+.panel.hero-old { background: var(--accent); color: var(--accent-ink); padding: 22px 20px; gap: 14px; }
 .panel.hero .eyebrow, .panel.hero .hint { color: var(--accent-ink); opacity: .8; }
 .panel.hero .btn { background: rgba(255, 255, 255, .18); color: var(--accent-ink); }
 .panel.hero .btn.primary { background: var(--accent-ink); color: var(--accent); }
@@ -200,25 +188,6 @@ details.panel > summary { cursor: pointer; font-weight: 600; min-height: 36px; }
 .cmdmsg.warn { background: var(--warn-soft); }
 @media (prefers-reduced-motion: no-preference) { .btn, .seg button, .tg, .sw, .sw::after, .chk, .star { transition: background .15s, left .15s; } }
 
-/* Agent : conversation, saisie fixe en bas, menu Plus */
-body.agent { padding-bottom: calc(66px + 142px + env(safe-area-inset-bottom, 0px) + 24px); }
-.chat { display: grid; gap: 10px; }
-.bub { max-width: 88%; padding: 11px 14px; border-radius: 18px; font-size: 15.5px; line-height: 1.45; overflow-wrap: anywhere; }
-.bub.a { background: var(--surface); box-shadow: var(--shadow); border-bottom-left-radius: 6px; justify-self: start; }
-.bub.u { background: var(--accent); color: var(--accent-ink); border-bottom-right-radius: 6px; justify-self: end; }
-.cfx { display: flex; flex-wrap: wrap; gap: 8px; }
-.pill { font: inherit; font-size: 14.5px; font-weight: 600; min-height: 42px; padding: 0 15px; border-radius: 21px; border: 0; background: var(--accent-soft); color: var(--accent); cursor: pointer; }
-.pill.on { background: var(--accent); color: var(--accent-ink); }
-.pill.warn { background: var(--soft); color: var(--ink); }
-.dock { position: fixed; left: 0; right: 0; bottom: calc(66px + env(safe-area-inset-bottom, 0px)); z-index: 7; background: var(--bg); border-top: 1px solid var(--line); padding: 8px max(14px, env(safe-area-inset-right, 0px)) 10px max(14px, env(safe-area-inset-left, 0px)); }
-.dock .in { max-width: 720px; margin: 0 auto; display: grid; gap: 8px; }
-.dchips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-.dchips::-webkit-scrollbar { display: none; }
-.dchips button { flex: none; font: inherit; font-size: 14px; font-weight: 500; min-height: 40px; padding: 0 14px; border-radius: 20px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
-.dline { display: flex; gap: 8px; align-items: center; }
-.dline input { flex: 1; min-height: 52px; border-radius: 26px; padding: 0 18px; font-size: 16px; }
-.send { flex: none; width: 52px; height: 52px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; cursor: pointer; padding: 0; }
-.send svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .mrow { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 70px; padding: 12px 16px; border: 0; border-radius: 18px; background: var(--surface); box-shadow: var(--shadow); font: inherit; text-align: left; color: inherit; cursor: pointer; }
 .mrow svg { width: 26px; height: 26px; fill: none; stroke: var(--accent); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .mrow b { display: block; font-weight: 600; }
@@ -255,6 +224,125 @@ body.noscroll { overflow: hidden; }
 details.rest > summary { cursor: pointer; color: var(--accent); font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 details.rest[open] > summary { margin-bottom: 8px; }
 .ver { text-align: center; }
+
+/* ===== v9 : coloré et motivant ===== */
+body { padding-block: 14px 150px; }
+.wrap { gap: 16px; }
+.top { padding-top: 6px; }
+.top .back { margin: 0; min-height: 44px; padding: 0 4px; font-size: 16px; }
+.top h1 { font-size: 30px; line-height: 1.05; }
+.top .eyebrow { text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 500; }
+.top .eyebrow::first-letter { text-transform: uppercase; }
+.streak { display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; border: 0; background: var(--surface); box-shadow: var(--shadow); font: inherit; font-weight: 700; color: var(--muted); cursor: pointer; flex: none; }
+.streak svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.streak.on { background: var(--streak-bg); color: var(--streak-ink); }
+.panel, .card { background: var(--surface); border-radius: 22px; box-shadow: var(--shadow); padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.card h3 { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+.item { border-radius: 18px; }
+.btn.primary { background: var(--grad); color: #fff; }
+.btn { border-radius: 16px; }
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); border-top: 1px solid var(--line); display: flex; gap: 2px; padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+.nav button { position: relative; flex: 1; min-width: 0; display: grid; justify-items: center; align-content: center; gap: 3px; min-height: 54px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 11px; font-weight: 600; cursor: pointer; border-radius: 12px; padding: 5px 0; }
+.nav svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.nav button[aria-current="page"] svg { stroke-width: 2.2; }
+.nav button[aria-current="page"] { color: var(--accent); }
+.nav button[aria-current="page"]::before { content: ""; position: absolute; top: -6px; width: 30px; height: 3px; border-radius: 0 0 3px 3px; background: var(--accent); }
+.fab { position: fixed; right: max(18px, env(safe-area-inset-right, 0px)); bottom: calc(66px + 16px + env(safe-area-inset-bottom, 0px)); z-index: 7; width: 60px; height: 60px; border-radius: 50%; border: 0; background: var(--grad); color: #fff; cursor: pointer; display: grid; place-items: center; padding: 0; box-shadow: 0 12px 28px -8px rgba(91, 75, 255, .65); }
+.fab.up { bottom: calc(66px + 16px + 62px + env(safe-area-inset-bottom, 0px)); }
+.fab svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+.scrim { position: fixed; inset: 0; z-index: 20; background: rgba(20, 14, 60, .45); border: 0; padding: 0; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; max-width: 720px; margin: 0 auto; max-height: 92vh; overflow-y: auto; background: var(--surface); border-radius: 26px 26px 0 0; padding: 10px max(18px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px)); display: grid; gap: 12px; box-shadow: 0 -10px 40px rgba(20, 14, 60, .28); }
+.sheet .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); justify-self: center; }
+.sheet form { display: grid; gap: 12px; }
+.sheet textarea { min-height: 104px; }
+.prev { display: grid; gap: 8px; }
+.prev:empty { display: none; }
+.pv { background: var(--soft); border-radius: 14px; padding: 10px 12px; display: grid; gap: 6px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.mc { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.mc.imp { background: var(--warn-soft); color: var(--warn); }
+.mc.ev { background: var(--soft); color: var(--ink); }
+.dd { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
+.toast { position: fixed; z-index: 40; left: 50%; transform: translateX(-50%); top: calc(10px + env(safe-area-inset-top, 0px)); width: min(calc(100% - 28px), 560px); background: #17142B; color: #fff; border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; font-size: 14.5px; box-shadow: 0 12px 30px rgba(20, 14, 60, .35); }
+.toast span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.toast button { border: 0; background: rgba(255, 255, 255, .16); color: #fff; font: inherit; font-weight: 700; font-size: 13.5px; min-height: 36px; padding: 0 12px; border-radius: 10px; cursor: pointer; flex: none; }
+.hero { background: var(--grad); color: #fff; border-radius: 26px; padding: 22px 20px; display: grid; gap: 12px; box-shadow: 0 18px 40px -20px rgba(91, 75, 255, .7); position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; right: -46px; top: -46px; width: 170px; height: 170px; border-radius: 50%; background: rgba(255, 255, 255, .12); pointer-events: none; }
+.hero > * { position: relative; z-index: 1; }
+.hero h2 { font-size: 28px; color: #fff; overflow-wrap: anywhere; }
+.hero .eyebrow { color: rgba(255, 255, 255, .85); }
+.hero .hsub { font-size: 14.5px; opacity: .93; }
+.hero .mc { background: rgba(255, 255, 255, .2); color: #fff; }
+.hero .clock { color: #fff; }
+.hero .btn.light, .fscreen .btn.light { background: #fff; color: #4B3CE6; }
+.btn.glass { background: rgba(255, 255, 255, .2); color: #fff; min-height: 44px; padding: 0 14px; font-size: 14px; }
+.hbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero.done { background: var(--grad2); }
+.hero.empty { background: var(--grad); }
+.hero.me .bar.light, .bar.light { background: rgba(255, 255, 255, .28); }
+.bar.light i { background: #fff; }
+.winrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.winrow.out { color: var(--muted); }
+.chipb { font: inherit; font-size: 14px; font-weight: 600; min-height: 38px; padding: 0 14px; border-radius: 19px; border: 0; background: var(--soft); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.chipb.on { background: var(--accent); color: var(--accent-ink); }
+.hero .chipb { background: rgba(255, 255, 255, .2); color: #fff; }
+.hero .chipb.on { background: #fff; color: #4B3CE6; }
+.fchips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.fchips::-webkit-scrollbar { display: none; }
+.fchips .chipb { flex: none; }
+.tools2 { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.energy { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.energy .seg { flex-wrap: nowrap; }
+.prog { grid-template-columns: 84px minmax(0, 1fr); align-items: center; gap: 14px; }
+.rbox { position: relative; width: 76px; height: 76px; }
+.rbox svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.r0 { fill: none; stroke: var(--soft); }
+.r1 { fill: none; stroke: var(--accent); stroke-linecap: round; }
+.rbox b { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-display); font-size: 18px; }
+.rbox.big { width: min(58vw, 220px); height: auto; aspect-ratio: 1; margin: 0 auto; }
+.rbox.big b { font-size: 46px; font-weight: 500; }
+.fbig { display: grid; place-items: center; padding: 6px 0; }
+.fcard { text-align: center; justify-items: stretch; }
+.fcard .btns { justify-content: center; }
+.pinfo { display: grid; gap: 4px; min-width: 0; }
+.xp { display: grid; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-top: 4px; }
+.gt { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.win { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--soft); border-radius: 14px; padding: 8px 12px; font-size: 14.5px; }
+.emptyc { text-align: left; }
+.pick { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; min-height: 50px; padding: 8px 14px; border: 0; border-radius: 14px; background: var(--soft); color: var(--ink); font: inherit; font-weight: 600; text-align: left; cursor: pointer; }
+.pick.on { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); color: var(--accent); }
+.pick span:first-child { display: flex; align-items: center; gap: 8px; min-width: 0; overflow-wrap: anywhere; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.tile { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); padding: 14px 8px; text-align: center; display: grid; gap: 2px; align-content: start; }
+.tile b { font-family: var(--font-display); font-size: 22px; color: var(--accent); overflow-wrap: anywhere; }
+.tile span { font-size: 12px; color: var(--muted); }
+.badges { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.badge2 { border-radius: 14px; padding: 10px 12px; background: var(--soft); opacity: .55; display: grid; gap: 2px; }
+.badge2.on { opacity: 1; background: var(--accent-soft); }
+.badge2 b { font-size: 14px; }
+.badge2 span { font-size: 12px; color: var(--muted); }
+.rowbtn .ti small { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.fscreen { background: var(--grad); color: #fff; }
+.fscreen.brk { background: var(--grad2); }
+.fscreen .fkind, .fscreen .sub { color: rgba(255, 255, 255, .88); }
+.fscreen .iconbtn { background: rgba(255, 255, 255, .18); color: #fff; box-shadow: none; }
+.fscreen .rbg { stroke: rgba(255, 255, 255, .25); }
+.fscreen .rfg, .fscreen.brk .rfg { stroke: #fff; }
+.fscreen .btn { background: rgba(255, 255, 255, .2); color: #fff; }
+.fscreen .btn.primary { background: #fff; color: #4B3CE6; }
+.fscreen.brk .btn.primary { color: #0B7A55; }
+.fscreen .dots i { background: rgba(255, 255, 255, .28); box-shadow: none; }
+.fscreen .dots i.on { background: #fff; }
+.fscreen .rdone { background: #fff; color: #4B3CE6; }
+.fscreen .ftask { color: #fff; }
+.mini { background: var(--grad); }
+@media (prefers-reduced-motion: no-preference) {
+  .toast { animation: pop .28s ease-out; }
+  .hero { animation: rise .35s ease-out; }
+  .chk:active, .fab:active, .btn:active { transform: scale(.95); }
+  @keyframes pop { from { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+}
 </style>
 </head>
 <body>
@@ -283,8 +371,9 @@ details.rest[open] > summary { margin-bottom: 8px; }
     4: { n: 'Éliminer', d: 'Ni urgent ni important' }
   };
   var ICONS = {
-    plan: '<path d="M5 6h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-7l-4 3v-3H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z"/>',
-    more: '<circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/>',
+    plan: '<path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/>',
+    focus: '<circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.6 1.6M9.5 3h5"/>',
+    more: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.6-3.6 3.4-5.6 7-5.6s6.4 2 7 5.6"/>',
     matrix: '<path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5L7.5 11M3.5 18l1.5 1.5L7.5 17"/>',
     habits: '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>',
     stats: '<path d="M5 20V10M12 20V4M19 20v-7"/>',
@@ -315,7 +404,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
   function defaults() { return { theme: 'light', sound: true, wake: true, notif: { block: true, morning: true, review: true, focus: true } }; }
   function ensure(s) {
     if ((!s.v || s.v < 5) && s.settings && s.settings.theme === 'auto') s.settings.theme = 'light';
-    s.v = 7;
+    s.v = 9;
     s.pomo = Object.assign({ work: 25, short: 5, long: 15, every: 4 }, s.pomo || {});
     s.flog = (Array.isArray(s.flog) ? s.flog : []).slice(-1500);
     s.daily = Object.assign({ checkin: '' }, s.daily || {});
@@ -324,7 +413,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
     if (!s.profile || typeof s.profile !== 'object') s.profile = { done: !!((s.tasks && s.tasks.length) || (s.history && s.history.length)), step: 0, ans: [] };
     s.profile.ans = Array.isArray(s.profile.ans) ? s.profile.ans : []; s.profile.step = +s.profile.step || 0; s.profile.done = !!s.profile.done;
     s.learn = s.learn || {}; s.learn.dom = s.learn.dom || {}; s.learn.imp = s.learn.imp || {};
-    s.chat = (Array.isArray(s.chat) ? s.chat : []).filter(function (m) { return m && typeof m.text === 'string'; }).slice(-30);
+    delete s.chat;
     s.ctx = Object.assign({ start: '09:00', end: '18:00', energie: 'moyenne', peak: 'matin', goal: '', pause: 15, auto: true, review: '20:30', margin: 20 }, s.ctx || {});
     s.tasks = (s.tasks || []).map(function (t) { return Object.assign({ id: uid(), title: '', dur: 30, i: null, u: null, effort: 2, deleg: false, due: '', dom: '', rec: '', hold: '', cue: '', starDay: '', postponed: 0, done: false, pid: '', sid: '', spent: 0 }, t); });
     s.vision = Object.assign({ y1: '', y3: '', y5: '', y10: '' }, s.vision || {});
@@ -371,6 +460,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
 
   var tab = 'plan', notice = null, formErr = '', editing = null, formOpen = false, capOpen = false, deferred = null, swReg = null;
   var armKey = '', armTimer = null, PC = null, PLAN = null;
+  var toast = null, toastT = null, capDraft = '';
   var ask = { i: 0, win: 0 }, openTask = null, showDone = false, cmdOpen = false, cmdMsg = null, lifeTab = 'bal', projOpen = null, projForm = false, projEdit = null, pfilter = 'active', projSeq = true, catFor = '';
   function blankDraft() { return { i: null, u: null, effort: 2, deleg: false }; }
   var draft = blankDraft(), hpart = 'matin';
@@ -635,7 +725,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
       var left = S.tasks.filter(function (t) { return !t.done; }).length, dn = S.tasks.filter(function (t) { return t.done; }).length;
       once('review', 'Revue du soir', dn + ' faite(s), ' + left + ' restante(s). Prépare demain en 2 minutes.');
     }
-    if (tab === 'plan' && !editingField() && !(S.timer && focusOpen)) render();
+    if (tab === 'plan' && !capOpen && !editingField() && !(S.timer && focusOpen)) render();
   }
   function editingField() { var a = document.activeElement; return a && (a.tagName === 'INPUT' || a.tagName === 'SELECT' || a.tagName === 'TEXTAREA'); }
   function clock(ms) { var s = Math.max(0, Math.round(ms / 1000)); return p2(Math.floor(s / 60)) + ':' + p2(s % 60); }
@@ -752,14 +842,14 @@ details.rest[open] > summary { margin-bottom: 8px; }
     return h + '</div></div>';
   }
   function minibar() {
-    var T = S.timer; if (!T || focusOpen || tab === 'plan') return '';
+    var T = S.timer; if (!T || focusOpen || tab === 'plan' || tab === 'focus') return '';
     var t = timerTask();
     return '<button class="mini" data-act="fopen"><i></i>' + (T.kind === 'ready' ? '' : '<span class="mono tmclock">' + clock(timerMs(T)) + '</span>') + '<span class="mt">' + esc(t ? t.title : timerLabel(T)) + '</span><b>Ouvrir</b></button>';
   }
   function timerCard() {
     var T = S.timer, t = timerTask();
-    return '<section class="panel hero"><p class="eyebrow">' + esc(timerLabel(T)) + (T.paused ? ' · en pause' : '') + '</p><h2 class="big">' + esc(t ? t.title : (T.kind === 'short' || T.kind === 'long' ? 'Souffle un peu' : 'Focus libre')) + '</h2>' +
-      (T.kind === 'ready' ? '' : '<p class="clock mono tmclock">' + clock(timerMs(T)) + '</p>') + '<button class="btn primary big" data-act="fopen">Ouvrir le focus</button></section>';
+    return '<section class="hero"><p class="eyebrow">' + esc(timerLabel(T)) + (T.paused ? ' · en pause' : '') + '</p><h2 class="big">' + esc(t ? t.title : (T.kind === 'short' || T.kind === 'long' ? 'Souffle un peu' : 'Focus libre')) + '</h2>' +
+      (T.kind === 'ready' ? '' : '<p class="clock mono tmclock">' + clock(timerMs(T)) + '</p>') + '<button class="btn light big" data-act="fopen">Ouvrir le focus</button></section>';
   }
 
   /* ---------- Jours et clôtures ---------- */
@@ -875,31 +965,6 @@ details.rest[open] > summary { margin-bottom: 8px; }
       '<button class="btn small" data-act="dismiss">OK</button></span></div>';
   }
 
-  function heroHtml(P, pc) {
-    if (S.timer) return focusOpen ? '' : timerCard();
-    var win = ask.win || 0, list = suggestList(P, pc, win);
-    if (!list.length) {
-      var anyOpen = S.tasks.some(function (t) { return !t.done; });
-      return '<section class="panel"><p class="eyebrow">Que dois-je faire maintenant ?</p><p class="why">' +
-        (win ? 'Aucune tâche ne tient en ' + dur(win) + '. Raccourcis une tâche ou découpe-la en une première étape.' :
-          (anyOpen ? 'Rien ne tient dans le temps qui reste aujourd’hui. Élargis ta journée dans Plus, Réglages, ou raccourcis une tâche.' : 'Tout est fait. Profite de ton temps libre.')) +
-        '</p>' + (win ? '<div class="btns"><button class="btn" data-act="askall">Sans limite de temps</button></div>' : '') + '</section>';
-    }
-    var idx = ask.i % list.length, x = list[idx], t = x.t;
-    var when = win ? 'Maintenant · ' + dur(t.dur) : whenText(x, pc, P) + ' · ' + dur(t.dur);
-    var h = '<section class="panel hero"><p class="eyebrow">' + (win ? 'Tu as ' + dur(win) + ' : que faire ?' : 'Que dois-je faire maintenant ?') + (list.length > 1 ? ' · ' + (idx + 1) + '/' + list.length : '') + '</p>' +
-      '<dl class="qa"><dt>Quoi</dt><dd class="q">' + esc(t.title) + '</dd><dt>Quand</dt><dd>' + esc(when) + '</dd>' +
-      '<dt>Où</dt><dd' + (t.cue ? '' : ' class="mute"') + '>' + (t.cue ? esc(t.cue) : 'Non précisé') + '</dd>' +
-      '<dt>Pourquoi</dt><dd>' + esc(x.why) + '</dd></dl>';
-    if (!pc.tomorrow) h += '<button class="btn primary big" data-act="focus" data-id="' + t.id + '">Commencer · ' + taskMinutes(t) + ' min de focus</button>';
-    h += '<div class="btns">' + (!pc.tomorrow ? '<button class="btn small" data-act="start" data-id="' + t.id + '">Juste 2 minutes</button>' : '') +
-      '<button class="btn small" data-act="done" data-id="' + t.id + '">Terminé</button>' +
-      (list.length > 1 ? '<button class="btn small" data-act="askmore">Autre idée</button>' : '') +
-      ((t.dur >= 45 || t.postponed >= 2) ? '<button class="btn small" data-act="split" data-id="' + t.id + '">Découper</button>' : '') + '</div>';
-    return h + '</section>';
-  }
-
-
   /* ---------- Commandes rapides : phrases simples + vraies règles (aucune IA) ---------- */
   /* ---------- Agent : comprendre une phrase (règles, pas une IA) ---------- */
   var DAYN = { lundi: 1, mardi: 2, mercredi: 3, jeudi: 4, vendredi: 5, samedi: 6, dimanche: 7 };
@@ -1011,200 +1076,163 @@ details.rest[open] > summary { margin-bottom: 8px; }
     if (c.time !== null) {
       var t0 = Math.min(c.time, 24 * 60 - 30), day = c.due || (t0 <= pc0.nowM ? addDays(pc0.today, 1) : pc0.today);
       var endM = Math.min(t0 + (c.durExplicit ? c.dur : 60), 24 * 60 - 1);
-      S.events.push({ id: uid(), label: c.title, start: fmt(t0), end: fmt(endM), rep: 'once', date: day });
-      return { text: 'Rendez-vous ajouté : « ' + c.title + ' », ' + dayWord(day) + ' de ' + fmt(t0) + ' à ' + fmt(endM) + '. Je planifie le reste autour.', tid: '', short: c.title + ' (' + fmt(t0) + ')' };
+      var eid = uid(); S.events.push({ id: eid, label: c.title, start: fmt(t0), end: fmt(endM), rep: 'once', date: day });
+      return { text: 'Rendez-vous ajouté : « ' + c.title + ' », ' + dayWord(day) + ' de ' + fmt(t0) + ' à ' + fmt(endM) + '. Je planifie le reste autour.', tid: '', eid: eid, short: c.title + ' (' + fmt(t0) + ')' };
     }
     var t = { id: uid(), title: c.title, dur: c.dur, i: c.i, u: c.u, effort: c.effort, deleg: false, due: c.due, dom: c.dom, rec: c.rec || '', hold: c.hold, cue: '', starDay: '', postponed: 0, done: false };
     S.tasks.push(t);
     return { text: quiet ? '' : taskReply(t), tid: t.id, short: t.title + ' (' + dur(t.dur) + ')' };
   }
 
-  /* ---------- Commandes : phrases simples + vraies règles (aucune IA) ---------- */
-  var DOCK_CHIPS = [['Que faire maintenant ?', 'que dois-je faire maintenant', 'chip'], ['Lancer un focus', 'lance un focus', 'chip'], ['Je suis fatigué', 'je suis fatigué', 'chip'], ['Organise demain', 'organise demain', 'chip'], ['J’ai 15 min', 'j’ai 15 minutes', 'chip'], ['Imprévu', 'urgence : ', 'fill'], ['Bilan du soir', 'bilan du soir', 'chip'], ['Je suis débordé', 'je suis débordé', 'chip'], ['Je procrastine', 'je procrastine', 'chip']];
-  function names(arr, max) {
-    var n = arr.slice(0, max || 3).map(function (t) { return '« ' + t.title + ' »'; }).join(', ');
-    return n + (arr.length > (max || 3) ? ' et ' + (arr.length - (max || 3)) + ' autre(s)' : '');
-  }
-  function firstTask(P) { var b = P.blocks.filter(function (x) { return x.type === 'task'; })[0]; return b ? b.o.t : null; }
-  function replanNow() {
-    var d = new Date(), nowM = Math.ceil((d.getHours() * 60 + d.getMinutes()) / 5) * 5;
-    if (S.ctx.auto) return { warn: false, text: 'Ton plan suit déjà l’heure qu’il est : il est à jour.' };
-    if (nowM > toMin(S.ctx.start) && nowM < toMin(S.ctx.end) - 15) {
-      var before = ids(); S.ctx.start = fmt(nowM); save();
-      var out = pushedOut(before);
-      return { warn: out.length > 0, text: 'Plan recalculé à partir de ' + S.ctx.start + '.' + (out.length ? ' Je repousse : ' + out.join(', ') + '.' : '') };
-    }
-    return { warn: false, text: 'Il est ' + fmt(d.getHours() * 60 + d.getMinutes()) + ' : en dehors de ta plage ou trop proche de la fin. Ajuste-la dans Plus, Réglages.' };
-  }
-  /* Renvoie une réponse si la phrase est une demande connue, sinon null (la phrase est alors une tâche). */
-  function runCommand(raw) {
-    var q = norm(raw).replace(/[’'\-]/g, ' ').replace(/\s+/g, ' ').trim(), m, pc = planCtx(), before, out, P, ft;
-    if (!q) return { warn: true, text: 'Écris une phrase, par exemple : je suis fatigué.' };
-    if ((m = String(raw).match(/^\s*(?:urgence|imprévu|imprevu|urgent)\b\s*:?\s*([\s\S]*)$/i))) {
-      var cu = m[1].trim() ? classify(m[1]) : null;
-      if (!cu || !cu.title) return { warn: true, text: 'Dis-moi quelle est l’urgence, par exemple : urgence : répondre au client.' };
-      before = ids();
-      S.tasks.push({ id: uid(), title: cu.title, dur: cu.dur, i: true, u: true, effort: 2, deleg: false, due: pc.pd, dom: cu.dom, rec: '', hold: '', cue: '', starDay: '', postponed: 0, done: false });
-      var nu = S.tasks[S.tasks.length - 1];
-      save(); out = pushedOut(before); resetAsk();
-      P = buildPlan(S, planCtx()); ft = firstTask(P);
-      return { warn: out.length > 0, text: '« ' + cu.title + ' » ajoutée en urgence. ' + (ft && ft.id === nu.id ? 'Elle passe en premier.' : placeText(nu, P, planCtx())) + (out.length ? ' Je repousse : ' + out.join(', ') + '.' : ' Le reste tient encore.') };
-    }
-    if (q.split(' ').length > 7) return null;
-    if (/^(aide|help|commandes|que sais tu|que peux tu)/.test(q)) return { warn: false, text: 'Écris-moi une tâche en une phrase (« Appeler le comptable demain 15 min »), je trouve la catégorie, la durée et l’importance. Tu peux aussi dire : « je suis fatigué », « organise demain », « j’ai 20 minutes », « je suis débordé », « je procrastine », « urgence : … », « que faire maintenant ». Ce sont des règles fixes, pas une IA.' };
-    if (/^(?:et )?(?:que dois je faire|que faire|quoi faire|je fais quoi|qu est ce que je fais|maintenant)/.test(q)) {
-      P = buildPlan(S, pc); var sl0 = suggestList(P, pc, 0); resetAsk();
-      if (!sl0.length) return { warn: false, text: S.tasks.some(function (t) { return !t.done; }) ? 'Rien ne tient dans le temps qui reste. Raccourcis une tâche ou élargis ta journée dans Plus, Réglages.' : 'Rien à faire pour le moment. Écris-moi une tâche quand tu veux.' };
-      return { warn: false, text: whenText(sl0[0], pc, P) + ' : « ' + sl0[0].t.title + ' » (' + dur(sl0[0].t.dur) + '). ' + sl0[0].why, pl: [['Lancer un focus', 'lance un focus']] };
-    }
-    if (/^(?:je |j )?(?:suis |me sens )?(?:tres |un peu |vraiment )?(?:fatigu|creve|epuise|lessive|a plat|pas la forme)/.test(q) || /^energie basse/.test(q) ||
-        /^(?:je |j )?(?:suis |me sens )?(?:tres |vraiment )?(?:en forme|en pleine forme|plein d energie|motive)/.test(q) || /^energie haute/.test(q)) {
-      var low = /fatigu|creve|epuise|lessive|a plat|pas la forme|basse/.test(q), lvl = low ? 'basse' : 'haute';
-      before = ids(); var same = S.ctx.energie === lvl; S.ctx.energie = lvl; S.daily.checkin = todayISO(); save();
-      out = pushedOut(before); P = buildPlan(S, planCtx()); ft = firstTask(P);
-      return { warn: false, text: (same ? 'Énergie déjà sur ' + ENLBL[lvl].toLowerCase() + '. ' : 'Énergie réglée sur ' + ENLBL[lvl].toLowerCase() + '. ') +
-        (ft ? 'Je commence par « ' + ft.title + ' ».' : 'Aucune tâche à planifier.') + (out.length ? ' Je repousse : ' + out.join(', ') + '.' : '') };
-    }
-    if (/^(?:peux tu |tu peux )?(?:organis|planifi|prepar|arrang)\w*\s+(?:moi\s+|ma\s+|mon\s+|la\s+)?(?:journee\s+|plan\s+)?(?:de\s+)?demain$/.test(q) || /^(?:plan|programme|journee) de demain$/.test(q)) {
-      var tom = tomorrowISO(), cur = S.tasks.filter(function (t) { return !t.done && t.starDay === tom; }).length;
-      var cands = S.tasks.filter(function (t) { return !t.done && !isHeld(t, tom) && t.starDay !== tom && !t.deleg && quad(t, tom) !== 4; })
-        .sort(function (a, b) { return score(b, S.ctx, tom) - score(a, S.ctx, tom); }).slice(0, Math.max(0, 3 - cur));
-      cands.forEach(function (t) { t.starDay = tom; });
-      var all = S.tasks.filter(function (t) { return !t.done && t.starDay === tom; });
-      if (!all.length) return { warn: true, text: 'Aucune tâche à mettre en priorité pour demain. Écris-moi d’abord quelques tâches.' };
-      save();
-      return { warn: false, text: 'Priorités de demain : ' + names(all, 3) + '. Elles passeront en tête du plan. Tu peux les changer dans Tâches.' };
-    }
-    if (/^(?:lance |lancer |demarre |demarrer |commence |commencer |fais |on fait |mets |mettre )?(?:un |le |mon |une |en )?(?:focus|pomodoro|minuteur|timer)(?:\s+(?:maintenant|libre))?(?:\s+(?:de\s+)?\d{1,3}\s*(?:min|minutes?))?$/.test(q)) {
-      if (S.timer) { focusOpen = true; return { warn: false, text: 'Ton focus est déjà en cours.' }; }
-      P = buildPlan(S, pc); var slf = suggestList(P, pc, 0), tf = /libre/.test(q) ? null : (slf[0] ? slf[0].t : null);
-      var mm = q.match(/(\d{1,3})\s*(?:min|minutes?)/), minutes = mm ? Math.min(120, Math.max(5, +mm[1])) : (tf ? taskMinutes(tf) : S.pomo.work);
-      audioUnlock(); startTimer('work', tf ? tf.id : '', minutes, 0);
-      return { warn: false, text: 'Focus de ' + minutes + ' minutes' + (tf ? ' sur « ' + tf.title + ' »' : '') + '. Bon courage !' };
-    }
-    if (/^(?:mon |le |fais mon |fais le )?(?:bilan|revue)(?: du soir| de la journee| de ma journee)?$/.test(q)) {
-      var dn = S.tasks.filter(function (t) { return t.done; }).length, lf = S.tasks.filter(function (t) { return !t.done && !isHeld(t, pc.today); }).length, fmn = focusMinOn(pc.today);
-      return { warn: false, aw: 'win', text: 'Bilan : ' + dn + ' tâche' + (dn > 1 ? 's' : '') + ' faite' + (dn > 1 ? 's' : '') + (fmn ? ', ' + dur(fmn) + ' de focus' : '') + '. ' + (lf ? 'Il en reste ' + lf + ' : elles passeront à demain.' : 'Tout est fait.') + ' Une chose qui s’est bien passée aujourd’hui ? Écris-la ci-dessous.' };
-    }
-    if (/^(?:replanifi|recalcul|mets a jour mon plan)/.test(q)) return replanNow();
-    var win = 0;
-    if (/^(?:j ai|il me reste|je dispose de|je n ai que|seulement|rien que|je suis libre)/.test(q)) {
-      if ((m = q.match(/\b(\d{1,3})\s*(?:min|minutes?)\b/))) win = +m[1];
-      else if ((m = q.match(/\b(\d{1,2})\s*(?:h|heures?)\b/))) win = (+m[1]) * 60;
-      else if (/\bun quart d heure\b/.test(q)) win = 15;
-      else if (/\bdemi heure\b/.test(q)) win = 30;
-      else if (/\bune heure\b/.test(q)) win = 60;
-    }
-    if (win) {
-      win = Math.min(240, Math.max(5, win)); P = buildPlan(S, pc);
-      var sl = suggestList(P, pc, win); ask = { i: 0, win: win };
-      return sl.length ? { warn: false, text: 'En ' + dur(win) + ', le mieux : « ' + sl[0].t.title + ' » (' + dur(sl[0].t.dur) + '). Détail dans la carte « Que dois-je faire ».' } : { warn: true, text: 'Rien ne tient en ' + dur(win) + '. Raccourcis une tâche ou découpe-la.' };
-    }
-    if (/^(?:je |j )?(?:suis |me sens )?(?:completement |vraiment |tres )?(?:deborde|surcharge|submerge)/.test(q) || /^trop (?:de choses|de taches|a faire)/.test(q)) {
-      var lighten = S.tasks.filter(function (t) { var qd = quad(t, pc.pd); return !t.done && !isHeld(t, pc.pd) && (qd === 3 || qd === 4) && !(t.due && diffDays(pc.pd, t.due) <= 0); });
-      if (!lighten.length) return { warn: true, text: 'Ton plan ne contient déjà que de l’important. Découpe une grosse tâche, délègue ce qui peut l’être ou raccourcis ta journée.' };
-      lighten.forEach(function (t) { t.hold = addDays(pc.pd, 1); }); save();
-      return { warn: false, text: 'J’ai mis de côté jusqu’à demain ' + names(lighten, 3) + ' (peu importantes). Retrouve-les dans Tâches, section « Plus tard ».' };
-    }
-    if (/^(?:je |j )?(?:procrastin|suis bloque|suis pas motive|n ai pas envie|ai pas envie|pas envie|flemme|n arrive pas)/.test(q)) {
-      P = buildPlan(S, pc); var sl2 = suggestList(P, pc, 0);
-      if (!sl2.length) return { warn: true, text: 'Aucune tâche à lancer. Écris-moi une tâche d’abord.' };
-      var tt = sl2[0].t;
-      if (pc.tomorrow) return { warn: false, text: 'Ta journée est finie. Repose-toi : demain, commence par « ' + tt.title + ' ».' };
-      audioUnlock(); startTimer('start', tt.id, 2, 0);
-      return { warn: false, text: 'Juste 2 minutes sur « ' + tt.title + ' ». Le minuteur est lancé.' };
-    }
-    return null;
-  }
-
-  /* ---------- Agent : conversation ---------- */
-  function say(r, text, tid, ex) {
-    var m = { r: r, text: String(text).slice(0, 600), tid: tid || '' };
-    if (ex && ex.pl) m.pl = ex.pl; if (ex && ex.aw) m.aw = ex.aw;
-    S.chat.push(m);
-    if (S.chat.length > 30) S.chat = S.chat.slice(-30);
-  }
-  function clearTids() { S.chat.forEach(function (m) { m.tid = ''; }); }
-  function bub(r, text) { return '<div class="bub ' + r + '">' + esc(text) + '</div>'; }
-  function pill(act, id, f, v, label, on, cls) {
-    return '<button class="pill' + (on ? ' on' : '') + (cls ? ' ' + cls : '') + '" data-act="' + act + '"' + (id ? ' data-id="' + id + '"' : '') + (f ? ' data-f="' + f + '"' : '') + ' data-v="' + esc(v) + '"' + (on !== undefined && on !== null ? ' aria-pressed="' + (!!on) + '"' : '') + '>' + esc(label) + '</button>';
-  }
-  function chatChips(m) {
-    var t = byId(m.tid); if (!t || t.done) return '';
-    if (catFor === t.id) {
-      return '<div class="cfx">' + DOMS.map(function (d) { return pill('cfix', t.id, 'dom', d, d, t.dom === d); }).join('') + pill('cfix', t.id, 'dom', '', 'Aucune', false, 'warn') + '</div>';
-    }
-    return '<div class="cfx">' + pill('cfix', t.id, 'i', '1', 'Important', t.i === true) + pill('cfix', t.id, 'i', '0', 'Pas important', t.i === false) +
-      pill('cfix', t.id, 'cat', '', (t.dom || 'Catégorie') + ' ▾', false) + pill('cfix', t.id, 'undo', '', 'Annuler', false, 'warn') + '</div>';
-  }
-  var OB_START = ['06:00', '07:00', '08:00', '09:00', '10:00'], OB_END = ['17:00', '18:00', '19:00', '20:00', '22:00'];
-  function viewOnboard() {
-    var st = S.profile.step || 0, ans = S.profile.ans, h = '<div class="chat">';
-    h += bub('a', 'Bonjour ! Je suis l’agent de Cadence. Je range tes tâches et j’organise ta journée selon toi. Je fonctionne avec des règles simples, pas avec une vraie IA. Trois petites questions pour commencer.');
-    h += bub('a', 'À quelle heure commences-tu ta journée, en général ?');
-    if (st === 0) return h + '<div class="cfx">' + OB_START.map(function (x) { return pill('obans', '', '', x, x); }).join('') + '</div></div>';
-    h += bub('u', ans[0]) + bub('a', 'Et tu termines vers quelle heure ?');
-    if (st === 1) {
-      var ends = OB_END.filter(function (x) { return toMin(x) >= toMin(S.ctx.start) + 240; }); if (!ends.length) ends = ['22:00'];
-      return h + '<div class="cfx">' + ends.map(function (x) { return pill('obans', '', '', x, x); }).join('') + '</div></div>';
-    }
-    h += bub('u', ans[1]) + bub('a', 'Quand es-tu le plus efficace pour les tâches difficiles ?');
-    return h + '<div class="cfx">' + pill('obans', '', '', 'matin', 'Le matin') + pill('obans', '', '', 'aprem', 'L’après-midi') + pill('obans', '', '', 'soir', 'Le soir') + '</div></div>';
-  }
   function greet() { var h = new Date().getHours(); return h < 5 ? 'Bonsoir' : h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir'; }
   function focusMinOn(day) { var m = 0; S.flog.forEach(function (e) { if (e.d === day) m += e.min; }); return m; }
   var EXAMPLES = ['Appeler le comptable demain 15 min', 'Réunion client vendredi à 14h', 'Aller courir ce soir 45 min'];
-  function viewAgent() {
-    if (!S.profile.done) return viewOnboard();
-    var P = PLAN, pc = PC, c = S.ctx, h = noticeHtml(), msgs = S.chat.slice(-2);
-    h += '<div class="chat">';
-    if (!msgs.length) h += bub('a', S.tasks.length ? 'Dis-moi ce que tu as à faire, ou demande-moi « que dois-je faire maintenant ? ».' : 'Écris-moi ta première tâche en une phrase, je m’occupe du reste. Par exemple :');
-    msgs.forEach(function (m, ix) {
-      h += bub(m.r, m.text);
-      if (m.r === 'a' && ix === msgs.length - 1) {
-        if (m.tid) h += chatChips(m);
-        if (m.pl) h += '<div class="cfx">' + m.pl.map(function (p) { return pill('chip', '', '', p[1], p[0]); }).join('') + '</div>';
-        if (m.aw) h += '<div class="cfx">' + pill('awskip', '', '', '1', 'Passer', false, 'warn') + '</div>';
+  /* ---------- Progression : points, niveaux, séries (calculés depuis l'historique, rien d'inventé) ---------- */
+  var LEVELS = [[0, 'Débutant'], [60, 'Curieux'], [160, 'Régulier'], [320, 'Organisé'], [560, 'Concentré'], [900, 'Constant'], [1400, 'Efficace'], [2100, 'Expert'], [3100, 'Maître du temps'], [4500, 'Légende']];
+  var DOMCOL = { 'Travail': '#5B4BFF', 'Santé': '#12B981', 'Sport': '#FF7A3D', 'Finances': '#E3A008', 'Relations': '#EC4899', 'Apprentissage': '#2E9BE6', 'Loisirs': '#9B5CF6', 'Développement': '#0FB5AE', 'Repos': '#7A8699' };
+  function domDot(d) { return '<i class="dd" style="background:' + (DOMCOL[d] || '#B8B4D0') + '"></i>'; }
+  function xpTotal() {
+    var x = 0;
+    S.history.forEach(function (e) { x += 10 + 5 * (e.effort || 2); });
+    S.flog.forEach(function (e) { x += e.min; });
+    S.wins.forEach(function () { x += 5; });
+    Object.keys(S.hlog).forEach(function (k) { x += 3 * (S.hlog[k] || []).length; });
+    return x;
+  }
+  function levelInfo() {
+    var x = xpTotal(), n = 0;
+    LEVELS.forEach(function (l, i) { if (x >= l[0]) n = i; });
+    var lo = LEVELS[n][0], hi = LEVELS[n + 1] ? LEVELS[n + 1][0] : null;
+    return { n: n + 1, name: LEVELS[n][1], xp: x, lo: lo, hi: hi, pct: hi ? Math.round((x - lo) / (hi - lo) * 100) : 100 };
+  }
+  function activeDays() {
+    var o = {};
+    S.history.forEach(function (e) { o[e.d] = true; });
+    S.flog.forEach(function (e) { if (e.min >= 1) o[e.d] = true; });
+    S.wins.forEach(function (w) { o[w.d] = true; });
+    Object.keys(S.hlog).forEach(function (k) { (S.hlog[k] || []).forEach(function (d) { o[d] = true; }); });
+    return o;
+  }
+  function streakInfo() {
+    var D = activeDays(), td = todayISO(), d = D[td] ? td : addDays(td, -1), n = 0;
+    while (D[d] && n < 3650) { n++; d = addDays(d, -1); }
+    var best = 0, run = 0, prev = '';
+    Object.keys(D).sort().forEach(function (k) { run = (prev && diffDays(prev, k) === 1) ? run + 1 : 1; if (run > best) best = run; prev = k; });
+    return { cur: n, today: !!D[td], best: best };
+  }
+  function badges() {
+    var tot = S.history.length, fm = 0, st = streakInfo(); S.flog.forEach(function (e) { fm += e.min; });
+    return [
+      ['Premier pas', 'Terminer 1 tâche', tot >= 1], ['Sur la lancée', 'Terminer 10 tâches', tot >= 10], ['Machine', 'Terminer 50 tâches', tot >= 50],
+      ['Focus', '1 h de focus au total', fm >= 60], ['Concentré', '10 h de focus au total', fm >= 600],
+      ['3 jours', 'Série de 3 jours', st.best >= 3], ['Une semaine', 'Série de 7 jours', st.best >= 7], ['Gratitude', 'Noter 5 victoires', S.wins.length >= 5]
+    ];
+  }
+  function doneOn(day) { return S.history.filter(function (e) { return e.d === day; }).length; }
+  function snap() { var l = levelInfo(), s = streakInfo(); return { xp: l.xp, lv: l.n, lvName: l.name, streak: s.cur, active: s.today }; }
+  function celebrate(b, openLeft) {
+    var a = snap(), gain = a.xp - b.xp, txt = gain > 0 ? 'Bravo ! +' + gain + ' points' : 'Fait';
+    if (a.lv > b.lv) txt = 'Niveau ' + a.lv + ' : ' + a.lvName + ' ! +' + gain + ' points';
+    else if (!b.active && a.active && a.streak >= 2) txt = 'Série de ' + a.streak + ' jours ! +' + gain + ' points';
+    else if (openLeft === 0) txt = 'Tout est fait pour aujourd’hui. +' + gain + ' points';
+    return txt;
+  }
+  function showToast(text, undo) {
+    toast = { text: text, undo: undo || null };
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toast = null; var el = document.getElementById('toast'); if (el) el.remove(); }, 7000);
+  }
+  function toastHtml() {
+    if (!toast) return '';
+    var one = toast.undo && toast.undo.t && toast.undo.t.length === 1 && !(toast.undo.e && toast.undo.e.length) ? toast.undo.t[0] : '';
+    return '<div class="toast" id="toast" role="status"><span>' + esc(toast.text) + '</span>' +
+      (one ? '<button data-act="toastedit" data-id="' + one + '">Modifier</button>' : '') +
+      (toast.undo ? '<button data-act="toastundo">Annuler</button>' : '') + '</div>';
+  }
+
+  /* ---------- Écran Aujourd'hui ---------- */
+  var DAYLET = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+  function ringSvg(pct, size, w) {
+    var r = (size - w) / 2, c = 2 * Math.PI * r;
+    return '<svg viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true"><circle class="r0" cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r.toFixed(1) + '" stroke-width="' + w + '"/><circle class="r1" cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r.toFixed(1) + '" stroke-width="' + w + '" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - Math.max(0, Math.min(100, pct)) / 100)).toFixed(1) + '"/></svg>';
+  }
+  function metaChips(t, pc) {
+    var c = [];
+    if (t.dom) c.push('<span class="mc">' + domDot(t.dom) + esc(t.dom) + '</span>');
+    c.push('<span class="mc">' + dur(t.dur) + '</span>');
+    if (t.due) c.push('<span class="mc">' + esc(dueText(t, pc.pd)) + '</span>');
+    return c.join('');
+  }
+  function heroHtml(P, pc) {
+    if (S.timer) return focusOpen ? '' : timerCard();
+    var win = ask.win || 0, list = suggestList(P, pc, win), openN = S.tasks.filter(function (t) { return !t.done; }).length;
+    var winRow = '<div class="winrow"><span>J’ai</span>' + [15, 30, 60].map(function (m) { return '<button class="chipb' + (win === m ? ' on' : '') + '" data-act="win" data-v="' + m + '">' + m + ' min</button>'; }).join('') + (win ? '<button class="chipb" data-act="askall">Sans limite</button>' : '') + '</div>';
+    if (!list.length) {
+      if (!S.tasks.length) return '<section class="hero empty"><p class="eyebrow">Ta journée</p><h2>Vide ta tête, je range tout.</h2><p class="hsub">Écris ce que tu as à faire, une idée par ligne. Je trouve la catégorie, la durée et la priorité.</p><button class="btn light big" data-act="capopen">Ajouter mes premières tâches</button></section>';
+      if (!openN) return '<section class="hero done"><p class="eyebrow">Bravo</p><h2>Tout est fait.</h2><p class="hsub">Savoure. Tu peux noter une victoire ci-dessous, ou ajouter une idée avec le bouton +.</p></section>';
+      return '<section class="hero empty"><p class="eyebrow">À faire maintenant</p><h2>' + (win ? 'Rien ne tient en ' + dur(win) + '.' : 'Rien ne tient aujourd’hui.') + '</h2><p class="hsub">' + (win ? 'Raccourcis une tâche ou découpe-la en une première étape.' : 'Élargis ta journée dans Moi, Réglages, ou raccourcis une tâche.') + '</p>' + (win ? winRow : '') + '</section>';
+    }
+    var idx = ask.i % list.length, x = list[idx], t = x.t;
+    var h = '<section class="hero"><p class="eyebrow">' + (win ? 'En ' + dur(win) + ' : fais ça' : 'À faire maintenant') + (list.length > 1 ? ' · ' + (idx + 1) + '/' + list.length : '') + '</p>' +
+      '<h2>' + esc(t.title) + '</h2><div class="meta">' + metaChips(t, pc) + '</div>' +
+      '<p class="hsub">' + esc(whenText(x, pc, P)) + '. ' + esc(x.why) + '</p>' + (t.cue ? '<p class="hsub">Où : ' + esc(t.cue) + '</p>' : '');
+    if (!pc.tomorrow) h += '<button class="btn light big" data-act="focus" data-id="' + t.id + '">Commencer · ' + taskMinutes(t) + ' min</button>';
+    h += '<div class="hbtns">' + (!pc.tomorrow ? '<button class="btn glass" data-act="start" data-id="' + t.id + '">2 min seulement</button>' : '') +
+      '<button class="btn glass" data-act="done" data-id="' + t.id + '">Fait</button>' +
+      (list.length > 1 ? '<button class="btn glass" data-act="askmore">Autre</button>' : '') +
+      ((t.dur >= 45 || t.postponed >= 2) ? '<button class="btn glass" data-act="split" data-id="' + t.id + '">Découper</button>' : '') + '</div>' + (win ? winRow : '') + '</section>';
+    if (!win) h += winRow.replace('winrow', 'winrow out');
+    return h;
+  }
+  function progressCard(P, pc) {
+    var dn = doneOn(pc.today), planned = P.blocks.filter(function (b) { return b.type === 'task'; }).length, pct = (dn + planned) ? Math.round(dn / (dn + planned) * 100) : 0;
+    var L = levelInfo(), fm = focusMinOn(pc.today);
+    return '<section class="card prog"><div class="rbox">' + ringSvg(pct, 76, 9) + '<b>' + pct + '%</b></div><div class="pinfo"><h3>' + dn + ' faite' + (dn > 1 ? 's' : '') + ' sur ' + (dn + planned) + '</h3>' +
+      '<p class="sub">' + (planned ? planned + ' à faire (' + dur(P.work) + ')' : 'Rien à faire') + (fm ? ' · ' + dur(fm) + ' de focus' : '') + '</p>' +
+      '<div class="xp"><span>Niv. ' + L.n + ' · ' + esc(L.name) + '</span><div class="bar"><i style="width:' + L.pct + '%"></i></div></div></div></section>';
+  }
+  function planList(P, pc) {
+    if (!P.blocks.length) return '';
+    var Lst = suggestList(P, pc, ask.win || 0), curId = Lst.length ? Lst[ask.i % Lst.length].t.id : '';
+    var shown = 0, top = '', rest = '', nrest = 0;
+    P.blocks.forEach(function (b) {
+      var row;
+      if (b.type === 'event') row = '<li class="trow event"><span class="mono">' + fmt(b.a) + '–' + fmt(b.b) + '</span><span>' + esc(b.label) + '</span></li>';
+      else if (b.type === 'pause') row = '<li class="trow pause"><span class="mono">' + fmt(b.a) + '</span><span>Pause de ' + (b.b - b.a) + ' min</span></li>';
+      else {
+        var t = b.o.t;
+        row = '<li class="trow"><button class="rowbtn' + (t.id === curId ? ' sel' : '') + '" data-act="pick" data-id="' + t.id + '"><span class="t">' + fmt(b.a) + '</span><span class="ti">' + esc(t.title) + '<small>' + domDot(t.dom) + dur(t.dur) + (t.dom ? ' · ' + esc(t.dom) : '') + '</small></span></button>' +
+          '<button class="chk" aria-pressed="false" aria-label="Terminer : ' + esc(t.title) + '" data-act="done" data-id="' + t.id + '">' + CHECK + '</button></li>';
+        shown++; if (shown > 3) nrest++;
       }
+      if (shown > 3) rest += row; else top += row;
     });
-    if (!S.tasks.length && !S.chat.some(function (m) { return m.r === 'u'; })) h += '<div class="cfx">' + EXAMPLES.map(function (x) { return pill('fill', '', '', x, x); }).join('') + '</div>';
-    if (S.daily.checkin !== pc.today && !pc.tomorrow && !S.timer) {
-      h += bub('a', greet() + ' ! Comment est ton énergie en ce moment ?') + '<div class="cfx">' + pill('checkin', '', '', 'basse', 'Basse') + pill('checkin', '', '', 'moyenne', 'Normale') + pill('checkin', '', '', 'haute', 'Haute') + pill('checkin', '', '', '', 'Passer', false, 'warn') + '</div>';
-    }
-    h += '</div>';
-    var openT = S.tasks.filter(function (t) { return !t.done; });
-    if (openT.length || S.timer) h += heroHtml(P, pc);
-    var msg2 = coach(P, pc).slice(0, 2);
-    if (msg2.length) h += '<div class="coach">' + msg2.map(function (m) { return '<div class="msg ' + m.tone + '"><i></i><span>' + esc(m.text) + '</span></div>'; }).join('') + '</div>';
+    var h = '<section class="group"><div class="row"><h3 class="gt">' + (pc.tomorrow ? 'Plan de demain' : 'Ton plan du jour') + '</h3><span class="mono sub">' + fmt(pc.start) + '–' + fmt(pc.end) + '</span></div><ol class="tl">' + top + '</ol>';
+    if (nrest) h += '<details class="rest"><summary>Voir le reste · ' + nrest + ' tâche' + (nrest > 1 ? 's' : '') + '</summary><ol class="tl">' + rest + '</ol></details>';
+    return h + '</section>';
+  }
+  function eveningCard(pc) {
+    var hh = new Date().getHours(), rv = toMin(S.ctx.review || '20:30'), nowM = hh * 60 + new Date().getMinutes();
+    var todays = S.wins.filter(function (w) { return w.d === pc.today; }), allDone = S.tasks.length && !S.tasks.some(function (t) { return !t.done; });
+    if (nowM < rv && !allDone) return '';
+    var h = '<section class="card"><p class="eyebrow">Bilan du soir</p><h3>Une chose qui s’est bien passée aujourd’hui ?</h3>';
+    todays.forEach(function (w, ix) { h += '<div class="win"><span>' + esc(w.text) + '</span><button class="btn small" data-act="wdel" data-id="' + ix + '">Retirer</button></div>'; });
+    if (todays.length < 3) h += '<form class="quick" id="winform" autocomplete="off"><input type="text" id="w-text" data-keep placeholder="Même petite…" aria-label="Une victoire"><button type="submit" class="btn primary">Noter</button></form>';
+    h += '<div class="btns">' + delBtn('close', '', 'Clôturer la journée', true) + '</div><p class="hint">Les tâches restantes passeront à demain. Ça se fait aussi tout seul au changement de jour.</p></section>';
+    return h;
+  }
+  function viewToday() {
+    if (!S.profile.done) return viewWelcome();
+    var P = PLAN, pc = PC, h = noticeHtml();
+    if (!pc.tomorrow) h += '<div class="energy"><span>Mon énergie</span><div class="seg sm">' + [['basse', 'Basse'], ['moyenne', 'Normale'], ['haute', 'Haute']].map(function (e) {
+      return '<button class="' + (S.ctx.energie === e[0] ? 'on' : '') + '" data-act="energy" data-v="' + e[0] + '">' + e[1] + '</button>'; }).join('') + '</div></div>';
+    h += heroHtml(P, pc);
+    if (S.tasks.length) h += progressCard(P, pc);
+    h += planList(P, pc);
+    var c2 = coach(P, pc).filter(function (m) { return m.tone === 'warn'; }).slice(0, 2);
+    if (c2.length) h += '<div class="coach">' + c2.map(function (m) { return '<div class="msg ' + m.tone + '"><i></i><span>' + esc(m.text) + '</span></div>'; }).join('') + '</div>';
+    if (P.later.length) h += '<div class="btns"><button class="btn ghost" data-act="tab" data-id="matrix">' + P.later.length + ' tâche' + (P.later.length > 1 ? 's' : '') + ' pas dans la journée · voir</button></div>';
     var done = S.tasks.filter(function (t) { return t.done; });
-    if (openT.length || done.length) {
-      var L = suggestList(P, pc, ask.win || 0), curId = L.length ? L[ask.i % L.length].t.id : '';
-      var planned = P.blocks.filter(function (b) { return b.type === 'task'; }).length, fm = focusMinOn(pc.today);
-      h += '<section class="group"><p class="eyebrow">' + (pc.tomorrow ? 'Plan de demain' : 'Ta journée') + ' · ' + esc(dayLabel(pc.pd)) + '</p>';
-      h += '<p class="summary"><span><b>' + done.length + '</b> faite' + (done.length > 1 ? 's' : '') + '</span><span><b>' + planned + '</b> à faire (' + dur(P.work) + ')</span>' + (fm ? '<span><b>' + dur(fm) + '</b> de focus</span>' : '') + '<span class="mono">' + fmt(pc.start) + '–' + fmt(pc.end) + '</span>' + (c.goal.trim() ? '<span>Priorité : <b>' + esc(c.goal.trim()) + '</b></span>' : '') + '</p>';
-      h += '<div class="bar" aria-hidden="true"><i style="width:' + ((done.length + planned) ? Math.round(done.length / (done.length + planned) * 100) : 0) + '%"></i></div></section>';
-      if (!P.blocks.length) {
-        if (openT.length) h += '<section class="panel empty"><h3>Rien à planifier</h3><p>Rien ne tient dans ta plage horaire. Élargis-la dans Plus, Réglages, ou raccourcis tes tâches.</p></section>';
-      } else {
-        var shown = 0, top = '', rest = '', nrest = 0;
-        P.blocks.forEach(function (b) {
-          var row;
-          if (b.type === 'event') row = '<li class="trow event"><span class="mono">' + fmt(b.a) + '–' + fmt(b.b) + '</span><span>' + esc(b.label) + '</span></li>';
-          else if (b.type === 'pause') row = '<li class="trow pause"><span class="mono">' + fmt(b.a) + '</span><span>Pause de ' + (b.b - b.a) + ' min</span></li>';
-          else {
-            var t = b.o.t;
-            row = '<li class="trow"><button class="rowbtn' + (t.id === curId ? ' sel' : '') + '" data-act="pick" data-id="' + t.id + '"><span class="t">' + fmt(b.a) + '</span><span class="ti">' + esc(t.title) + '<small>' + dur(t.dur) + (t.dom ? ' · ' + esc(t.dom.toLowerCase()) : '') + '</small></span></button>' +
-              '<button class="chk" aria-pressed="false" aria-label="Terminer : ' + esc(t.title) + '" data-act="done" data-id="' + t.id + '">' + CHECK + '</button></li>';
-            shown++;
-            if (shown > 3) nrest++;
-          }
-          if (shown > 3) rest += row; else top += row;
-        });
-        h += '<ol class="tl">' + top + '</ol>';
-        if (nrest) h += '<details class="rest"><summary>Voir le reste de la journée · ' + nrest + ' tâche' + (nrest > 1 ? 's' : '') + '</summary><ol class="tl">' + rest + '</ol></details>';
-      }
-      if (P.later.length) h += '<div class="btns"><button class="btn ghost" data-act="tab" data-id="matrix">' + P.later.length + ' tâche' + (P.later.length > 1 ? 's' : '') + ' pas dans la journée · voir</button></div>';
-    }
     if (done.length) {
       var dm = 0; done.forEach(function (t) { dm += t.dur; });
       h += '<div class="btns"><button class="btn ghost" data-act="showdone">' + (showDone ? 'Masquer' : 'Faites aujourd’hui · ' + done.length + ' (' + dur(dm) + ')') + '</button></div>';
@@ -1212,21 +1240,199 @@ details.rest[open] > summary { margin-bottom: 8px; }
         return '<div class="item"><div class="row"><h3 class="done-t">' + esc(t.title) + '</h3><button class="btn small" data-act="undo" data-id="' + t.id + '">Remettre</button></div></div>';
       }).join('') + '</section>';
     }
+    h += eveningCard(pc);
     return h;
   }
-  var MORE = [['projects', 'Projets', 'Les grosses missions, étape par étape'], ['life', 'Ma vie', 'Équilibre, vision, objectifs, habitudes'], ['stats', 'Bilan', 'Revue du soir et statistiques'], ['settings', 'Réglages', 'Horaires, rendez-vous fixes, rappels, sauvegarde']];
-  function viewMore() {
-    var h = '<section class="group"><h2>Plus</h2></section>' + noticeHtml();
-    h += MORE.map(function (r) {
-      return '<button class="mrow" data-act="tab" data-id="' + r[0] + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[r[0]] + '</svg><span><b>' + r[1] + '</b><small>' + r[2] + '</small></span></button>';
+  /* ---------- Bienvenue (première ouverture) ---------- */
+  function viewWelcome() {
+    var c = S.ctx, ends = ['17:00', '18:00', '19:00', '20:00', '22:00'].filter(function (x) { return toMin(x) >= toMin(c.start) + 240; });
+    if (!ends.length) ends = ['22:00'];
+    function row(f, opts, cur) { return '<div class="seg">' + opts.map(function (o) { return '<button type="button" class="' + (o[0] === cur ? 'on' : '') + '" data-act="obsel" data-f="' + f + '" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
+    return '<section class="hero"><p class="eyebrow">Bienvenue</p><h2>Ton assistant d’organisation.</h2><p class="hsub">Écris tes idées, Cadence les range, planifie ta journée et t’aide à te concentrer. Tout reste sur ton téléphone. Trois réglages pour commencer :</p></section>' +
+      '<section class="card"><h3>Ta journée commence à…</h3>' + row('start', ['06:00', '07:00', '08:00', '09:00', '10:00'].map(function (x) { return [x, x]; }), c.start) +
+      '<h3>… et se termine vers…</h3>' + row('end', ends.map(function (x) { return [x, x]; }), c.end) +
+      '<h3>Tu es le plus efficace…</h3>' + row('peak', [['matin', 'Le matin'], ['aprem', 'L’après-midi'], ['soir', 'Le soir']], c.peak) + '</section>' +
+      '<button class="btn primary big" data-act="obdone">C’est parti</button><p class="hint">Cadence fonctionne avec des règles simples, pas avec une vraie IA. Tu pourras tout changer dans Moi, Réglages.</p>';
+  }
+  /* ---------- Capture rapide (bouton +) ---------- */
+  var capErr = '';
+  function capSheet() {
+    return '<button class="scrim" data-act="capclose" aria-label="Fermer"></button><section class="sheet" role="dialog" aria-label="Nouvelle idée"><div class="grab"></div><h2>Qu’as-tu en tête ?</h2>' +
+      '<form id="capform" autocomplete="off"><textarea id="cap-text" data-keep placeholder="Appeler le comptable demain 15 min&#10;Réunion client vendredi à 14h&#10;Courir ce soir 45 min">' + esc(capDraft) + '</textarea><div id="cap-prev" class="prev">' + capPrevHtml(capDraft) + '</div>' +
+      (capErr ? '<p class="err">' + esc(capErr) + '</p>' : '') + '<button type="submit" class="btn primary big">Ajouter</button></form>' +
+      '<p class="hint">Une idée par ligne. Je trouve la catégorie, la durée, la date et la priorité. Une heure (« à 14h ») crée un rendez-vous.</p></section>';
+  }
+  function capVal() { var el = document.getElementById('cap-text'); return el ? el.value : capDraft; }
+  function capPrevHtml(v) {
+    var lines = String(v || '').split(/[\r\n;]+/).map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 8);
+    return lines.map(function (line) {
+      var c = classify(line); if (!c.title) return '';
+      var chips = [];
+      if (c.time !== null) chips.push('<span class="mc ev">Rendez-vous ' + fmt(c.time) + '</span>');
+      else {
+        chips.push('<span class="mc">' + (c.dom ? domDot(c.dom) + esc(c.dom) : 'Sans catégorie') + '</span>', '<span class="mc">' + dur(c.dur) + '</span>');
+        if (c.due) chips.push('<span class="mc">' + esc(dayWord(c.due)) + '</span>');
+        if (c.i === true) chips.push('<span class="mc imp">Important</span>');
+        if (c.u === true) chips.push('<span class="mc imp">Urgent</span>');
+        if (c.rec) chips.push('<span class="mc">' + esc(RECL[c.rec]) + '</span>');
+      }
+      return '<div class="pv"><b>' + esc(c.title) + '</b><div class="meta">' + chips.join('') + '</div></div>';
     }).join('');
-    var nl = Object.keys(S.learn.dom).length + Object.keys(S.learn.imp).length;
-    var fm7 = 0, w0 = weekStart(todayISO()); S.flog.forEach(function (e) { if (e.d >= w0) fm7 += e.min; });
-    h += '<section class="panel"><h3 class="title">Comment fonctionne l’agent</h3><p class="sub">Il classe et planifie avec des règles fixes : mots-clés, dates, importance, urgence, énergie et créneaux. Ce n’est pas une vraie IA. Il apprend de tes corrections, sur cet appareil seulement.</p>' +
-      '<p class="hint">' + (nl ? nl + ' mot' + (nl > 1 ? 's' : '') + ' retenu' + (nl > 1 ? 's' : '') + ' grâce à tes corrections.' : 'Rien retenu pour l’instant : corrige une catégorie ou une importance, et il s’en souviendra.') + '</p>' +
-      (nl ? '<div class="btns">' + delBtn('unlearn', '', 'Lui faire tout oublier', true) + '</div>' : '') + '</section>';
-    h += '<p class="hint ver">Cadence · version 8 · tes données restent sur cet appareil</p>';
+  }
+  function submitCap() {
+    var made = { t: [], e: [] }, n = 0, last = null;
+    capVal().split(/[\r\n;]+/).map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 30).forEach(function (line) {
+      var x = addSentence(line, true); if (!x) return; n++; last = x;
+      if (x.tid) made.t.push(x.tid); if (x.eid) made.e.push(x.eid);
+    });
+    if (!n) { capErr = 'Écris au moins une idée.'; render(); return; }
+    capErr = ''; capOpen = false; capDraft = ''; resetAsk(); save();
+    var msg = n === 1 ? (last.tid ? '« ' + byId(last.tid).title + ' » ajoutée · ' + dur(byId(last.tid).dur) + (byId(last.tid).dom ? ' · ' + byId(last.tid).dom : '') : last.short + ' : rendez-vous ajouté') : n + ' idées ajoutées et rangées';
+    showToast(msg, made); render({ 'cap-text': '' });
+  }
+  function addWin() {
+    var el = document.getElementById('w-text'), wt = ((el && el.value) || '').trim(); if (!wt) return;
+    if (S.wins.filter(function (w) { return w.d === todayISO(); }).length >= 3) return;
+    var b0 = snap(); S.wins.push({ d: todayISO(), text: wt.slice(0, 120) }); if (S.wins.length > 400) S.wins = S.wins.slice(-400);
+    save(); showToast(celebrate(b0, -1)); render({ 'w-text': '' });
+  }
+  /* ---------- Onglet Tâches ---------- */
+  var dfilter = '', tview = 'list';
+  function taskRow(t, pd) {
+    var o = openTask === t.id, urg = effUrgent(t, pd), meta = [];
+    if (t.due) meta.push(esc(dueText(t, pd)));
+    if (t.rec) meta.push(esc(RECL[t.rec].toLowerCase()));
+    if (starred(t, pd)) meta.push('★ priorité');
+    var h = '<div class="item"><div class="line"><button class="chk" aria-pressed="false" aria-label="Terminer : ' + esc(t.title) + '" data-act="done" data-id="' + t.id + '">' + CHECK + '</button>' +
+      '<button class="rowbtn" data-act="topen" data-id="' + t.id + '" aria-expanded="' + o + '"><span class="ti">' + esc(t.title) + '<small>' + domDot(t.dom) + dur(t.dur) + (t.dom ? ' · ' + esc(t.dom) : '') + (meta.length ? ' · ' + meta.join(' · ') : '') + '</small></span></button></div>';
+    if (o) {
+      h += '<div class="more"><div class="chips">' + chipsFor(t, pd) + '</div>' + (t.cue ? '<p class="cue">Où : ' + esc(t.cue) + '</p>' : '') + (t.postponed ? '<span class="badge">Reportée ' + t.postponed + ' fois</span>' : '') +
+        '<div class="btns"><button class="tg" aria-pressed="' + (t.i === true) + '" data-act="tgi" data-id="' + t.id + '">Important</button><button class="tg" aria-pressed="' + urg + '" data-act="tgu" data-id="' + t.id + '">Urgent</button>' +
+        '<button class="tg" aria-pressed="' + starred(t, tomorrowISO()) + '" data-act="star" data-id="' + t.id + '">★ Demain</button></div>' +
+        '<label class="f">Catégorie<select data-act="setdom" data-id="' + t.id + '" aria-label="Catégorie">' + domOptions(t.dom) + '</select></label>' +
+        '<div class="btns"><button class="btn small primary" data-act="focus" data-id="' + t.id + '">Focus</button><button class="btn small" data-act="edit" data-id="' + t.id + '">Modifier</button>' + delBtn('del', t.id, 'Supprimer', true) + '</div></div>';
+    }
+    return h + '</div>';
+  }
+  function viewTasks() {
+    var pd = PC.pd, td = PC.today;
+    var open = S.tasks.filter(function (t) { return !t.done && !isHeld(t, td); });
+    var held = S.tasks.filter(function (t) { return !t.done && isHeld(t, td); });
+    var h = noticeHtml();
+    var doms = []; S.tasks.forEach(function (t) { if (!t.done && t.dom && doms.indexOf(t.dom) < 0) doms.push(t.dom); });
+    if (dfilter && doms.indexOf(dfilter) < 0) dfilter = '';
+    function fl(a) { return dfilter ? a.filter(function (t) { return t.dom === dfilter; }) : a; }
+    h += '<div class="tools2"><div class="seg sm">' + [['list', 'Liste'], ['mx', 'Priorités']].map(function (o) { return '<button class="' + (tview === o[0] ? 'on' : '') + '" data-act="tview" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</div><button class="btn ghost" data-act="newtask">Tâche détaillée</button></div>';
+    if (formOpen || editing) h += taskForm();
+    if (doms.length > 1) h += '<div class="fchips"><button class="chipb' + (dfilter ? '' : ' on') + '" data-act="dfil" data-v="">Tout</button>' + doms.map(function (d) { return '<button class="chipb' + (dfilter === d ? ' on' : '') + '" data-act="dfil" data-v="' + esc(d) + '">' + domDot(d) + esc(d) + '</button>'; }).join('') + '</div>';
+    if (!S.tasks.some(function (t) { return !t.done; })) {
+      return h + '<section class="card emptyc"><h3>Aucune tâche pour l’instant</h3><p class="sub">Appuie sur le bouton + et écris ce que tu as en tête. Cadence range tout pour toi.</p><button class="btn primary" data-act="capopen">Ajouter une idée</button></section>';
+    }
+    var inbox = fl(open.filter(unsorted));
+    if (inbox.length) {
+      h += '<section class="card"><div class="row"><h3>À préciser</h3><span class="mono sub">' + inbox.length + '</span></div><p class="hint">Important : ça fait avancer ce qui compte pour toi. Urgent : une échéance proche.</p>' + inbox.map(function (t) {
+        var needU = t.u === null && !t.due;
+        return '<div class="item"><div class="row"><h3>' + esc(t.title) + '</h3><span class="mono sub">' + dur(t.dur) + '</span></div>' +
+          '<div class="ask"><span class="lab">Important ?</span>' + seg('i', [['1', 'Oui'], ['0', 'Non']], t.i === null ? '' : (t.i ? '1' : '0'), 'seti').replace(/data-act="seti"/g, 'data-act="seti" data-id="' + t.id + '"') + '</div>' +
+          (needU ? '<div class="ask"><span class="lab">Urgent ?</span>' + seg('u', [['1', 'Oui'], ['0', 'Non']], '', 'setu').replace(/data-act="setu"/g, 'data-act="setu" data-id="' + t.id + '"') + '</div>' : '') +
+          '<label class="f">Catégorie<select data-act="setdom" data-id="' + t.id + '" aria-label="Catégorie">' + domOptions(t.dom) + '</select></label>' +
+          '<div class="btns">' + delBtn('del', t.id, 'Supprimer', true) + '</div></div>';
+      }).join('') + '</section>';
+    }
+    var sorted = fl(open.filter(function (t) { return !unsorted(t); }));
+    if (tview === 'mx') {
+      [1, 2, 3, 4].forEach(function (q) {
+        var items = sorted.filter(function (t) { return quad(t, pd) === q; }).sort(function (a, b) { return score(b, S.ctx, pd) - score(a, S.ctx, pd); });
+        h += '<section class="group q' + q + '"><div class="qh"><i></i><h3>' + QUAD[q].n + ' <span class="d">· ' + QUAD[q].d + '</span></h3><span class="cnt">' + items.length + '</span></div>' +
+          (items.length ? items.map(function (t) { return taskRow(t, pd); }).join('') : '<p class="hint">' + (q === 1 ? 'Rien d’urgent et important. Respire.' : q === 2 ? 'Ajoute ici ce qui te fait avancer sur le long terme.' : q === 3 ? 'Aucune interruption à déléguer.' : 'Rien à éliminer.') + '</p>') + '</section>';
+      });
+    } else {
+      var inPlan = sorted.filter(function (t) { return PLAN.ids[t.id]; }).sort(function (a, b) { return score(b, S.ctx, pd) - score(a, S.ctx, pd); });
+      var later = sorted.filter(function (t) { return !PLAN.ids[t.id]; }).sort(function (a, b) { return score(b, S.ctx, pd) - score(a, S.ctx, pd); });
+      if (inPlan.length) h += '<section class="group"><div class="qh"><h3>' + (PC.tomorrow ? 'Dans le plan de demain' : 'Dans ta journée') + '</h3><span class="cnt">' + inPlan.length + '</span></div>' + inPlan.map(function (t) { return taskRow(t, pd); }).join('') + '</section>';
+      if (later.length) h += '<section class="group"><div class="qh"><h3>Pour plus tard</h3><span class="cnt">' + later.length + '</span></div><p class="hint">Pas de place aujourd’hui : elles passent avant les autres dès qu’il y a de la place.</p>' + later.map(function (t) { return taskRow(t, pd); }).join('') + '</section>';
+    }
+    held = fl(held);
+    if (held.length) h += '<details class="panel"><summary>Prévues plus tard ou en pause · ' + held.length + '</summary>' + held.map(function (t) {
+      return '<div class="item"><div class="row"><h3>' + esc(t.title) + '</h3><span class="mono sub">' + dur(t.dur) + '</span></div><span class="hint">' + (t.hold && t.hold > td ? 'Réapparaît le ' + esc(dayLabel(t.hold)) : 'Projet en pause ou clos') + '</span><div class="btns"><button class="btn small" data-act="edit" data-id="' + t.id + '">Modifier</button>' + delBtn('del', t.id, 'Supprimer', true) + '</div></div>';
+    }).join('') + '</details>';
     return h;
+  }
+  /* ---------- Onglet Focus ---------- */
+  var fsel = '';
+  function viewFocusTab() {
+    var h = noticeHtml(), pc = PC, P = PLAN;
+    if (S.timer) h += timerCard();
+    var list = suggestList(P, pc, 0).slice(0, 6), cur = null;
+    if (fsel !== 'free') { var ft = fsel ? byId(fsel) : null; cur = (ft && !ft.done) ? ft : (list[0] ? list[0].t : null); }
+    var mins = cur ? taskMinutes(cur) : S.pomo.work;
+    if (!S.timer) {
+      h += '<section class="card fcard"><div class="fbig"><div class="rbox big">' + ringSvg(100, 200, 10) + '<b class="mono">' + p2(mins) + ':00</b></div></div>' +
+        '<h3>' + (cur ? esc(cur.title) : 'Focus libre') + '</h3><p class="sub">Une seule chose pendant ' + mins + ' minutes. Le reste attend.</p>' +
+        '<button class="btn primary big" data-act="fstart" data-id="' + (cur ? cur.id : '') + '">Démarrer le focus</button>' +
+        '<div class="btns"><button class="btn" data-act="fstart" data-id="' + (cur ? cur.id : '') + '" data-v="2">2 minutes seulement</button></div></section>';
+      h += '<section class="card"><h3>Sur quoi te concentrer ?</h3>';
+      list.forEach(function (x) { h += '<button class="pick' + (cur && cur.id === x.t.id ? ' on' : '') + '" data-act="fsel" data-id="' + x.t.id + '"><span>' + domDot(x.t.dom) + esc(x.t.title) + '</span><span class="mono sub">' + dur(x.t.dur) + '</span></button>'; });
+      h += '<button class="pick' + (!cur ? ' on' : '') + '" data-act="fsel" data-id="free"><span>Focus libre, sans tâche</span></button>';
+      if (!list.length) h += '<p class="hint">Aucune tâche à proposer : le focus libre fonctionne quand même.</p>';
+      h += '<div class="f">Durée d’une session' + seg('work', [[15, '15'], [25, '25'], [30, '30'], [45, '45'], [50, '50']], S.pomo.work, 'pomo').replace(/class="seg"/, 'class="seg sm"') + '</div></section>';
+    }
+    var w0 = weekStart(pc.today), tot = 0, bars = '', labs = '', mx = 1, vals = [];
+    for (var i = 0; i < 7; i++) { var dm = focusMinOn(addDays(w0, i)); vals.push(dm); tot += dm; if (dm > mx) mx = dm; }
+    vals.forEach(function (v, i2) { bars += '<div class="' + (addDays(w0, i2) === pc.today ? 'hot' : '') + '" style="height:' + Math.max(3, Math.round(v / mx * 100)) + '%" title="' + v + ' min"></div>'; labs += '<span>' + DAYLET[i2] + '</span>'; });
+    var sess = S.flog.filter(function (e) { return e.d === pc.today && e.min >= 5; }).length;
+    h += '<section class="card"><div class="row"><h3>Ton focus</h3><span class="mono sub">' + dur(focusMinOn(pc.today)) + ' aujourd’hui</span></div><p class="sub">' + sess + ' session' + (sess > 1 ? 's' : '') + ' aujourd’hui · ' + dur(tot) + ' cette semaine</p><div class="hist">' + bars + '</div><div class="hlab">' + labs + '</div></section>';
+    h += '<section class="card"><h3>Comment ça marche</h3><p class="sub">Une session de concentration (25 min par défaut), puis une pause de 5 min. Toutes les 4 sessions, une longue pause de 15 min. Pas envie de commencer ? Lance 2 minutes seulement : le plus dur, c’est de démarrer.</p></section>';
+    return h;
+  }
+  /* ---------- Onglet Moi ---------- */
+  var MORE = [['stats', 'Bilan et statistiques', 'Ta semaine, tes estimations, ta revue du soir'], ['life', 'Ma vie', 'Équilibre, vision, objectifs, habitudes'], ['projects', 'Projets', 'Les grosses missions, étape par étape'], ['settings', 'Réglages', 'Horaires, rendez-vous fixes, rappels, sauvegarde']];
+  function viewMe() {
+    var L = levelInfo(), st = streakInfo(), w0 = weekStart(PC.today), wk = S.history.filter(function (e) { return e.d >= w0; }).length, fw = 0;
+    S.flog.forEach(function (e) { if (e.d >= w0) fw += e.min; });
+    var h = noticeHtml() + '<section class="hero me"><p class="eyebrow">Niveau ' + L.n + '</p><h2>' + esc(L.name) + '</h2><div class="bar light"><i style="width:' + L.pct + '%"></i></div><p class="hsub">' + L.xp + ' points' + (L.hi ? ' · encore ' + (L.hi - L.xp) + ' pour le niveau suivant' : ' · niveau maximum') + '</p></section>';
+    h += '<div class="tiles"><div class="tile"><b>' + st.cur + '</b><span>jour' + (st.cur > 1 ? 's' : '') + ' de suite</span></div><div class="tile"><b>' + wk + '</b><span>tâche' + (wk > 1 ? 's' : '') + ' cette semaine</span></div><div class="tile"><b>' + dur(fw) + '</b><span>de focus cette semaine</span></div></div>';
+    h += '<p class="hint">Une série compte chaque jour où tu termines une tâche, fais une session de focus, coches une habitude ou notes une victoire.' + (st.best > st.cur ? ' Ton record : ' + st.best + ' jours.' : '') + '</p>';
+    h += '<section class="card"><h3>Succès</h3><div class="badges">' + badges().map(function (b) { return '<div class="badge2' + (b[2] ? ' on' : '') + '"><b>' + esc(b[0]) + '</b><span>' + esc(b[1]) + '</span></div>'; }).join('') + '</div></section>';
+    h += MORE.map(function (r) { return '<button class="mrow" data-act="tab" data-id="' + r[0] + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[r[0]] + '</svg><span><b>' + r[1] + '</b><small>' + r[2] + '</small></span></button>'; }).join('');
+    var nl = Object.keys(S.learn.dom).length + Object.keys(S.learn.imp).length;
+    h += '<section class="card"><h3>Comment Cadence range tes idées</h3><p class="sub">Il classe et planifie avec des règles fixes : mots-clés, dates, importance, urgence, énergie et créneaux. Ce n’est pas une vraie IA. Il apprend de tes corrections, sur cet appareil seulement.</p>' +
+      '<p class="hint">' + (nl ? nl + ' mot' + (nl > 1 ? 's' : '') + ' retenu' + (nl > 1 ? 's' : '') + ' grâce à tes corrections.' : 'Rien retenu pour l’instant : change une catégorie ou une importance dans Tâches, et il s’en souviendra.') + '</p>' +
+      (nl ? '<div class="btns">' + delBtn('unlearn', '', 'Tout lui faire oublier', true) + '</div>' : '') + '</section>';
+    h += '<p class="hint ver">Cadence · version 9 · tes données restent sur cet appareil</p>';
+    return h;
+  }
+  /* ---------- Structure de la page ---------- */
+  var NAV = [['plan', 'Aujourd’hui'], ['matrix', 'Tâches'], ['focus', 'Focus'], ['more', 'Moi']];
+  function nav() {
+    var cur = (tab === 'plan' || tab === 'matrix' || tab === 'focus') ? tab : 'more';
+    return '<nav class="nav" aria-label="Navigation">' + NAV.map(function (t) {
+      return '<button data-act="tab" data-id="' + t[0] + '"' + (cur === t[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[t[0]] + '</svg><span>' + t[1] + '</span></button>';
+    }).join('') + '</nav>';
+  }
+  function header() {
+    var st = streakInfo(), sub = tab === 'projects' || tab === 'life' || tab === 'stats' || tab === 'settings';
+    var title = tab === 'plan' ? greet() : tab === 'matrix' ? 'Tes tâches' : tab === 'focus' ? 'Focus' : tab === 'more' ? 'Moi' : tab === 'projects' ? 'Projets' : tab === 'life' ? 'Ma vie' : tab === 'stats' ? 'Bilan' : 'Réglages';
+    var strk = S.profile.done ? '<button class="streak' + (st.cur ? ' on' : '') + '" data-act="tab" data-id="more" aria-label="Série de ' + st.cur + ' jours"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 3.2 4.5 5.1 4.5 9.2A4.5 4.5 0 0 1 12 17a4.5 4.5 0 0 1-4.5-4.4c0-1.7.8-2.9 1.7-3.8.2 1.4.9 2.2 1.7 2.5C10.6 8.2 11 5.6 12 3zM8 19.5h8"/></svg><b>' + st.cur + '</b></button>' : '';
+    if (sub) return '<header class="top"><button class="btn ghost back" data-act="tab" data-id="more">← Moi</button>' + strk + '</header>';
+    return '<header class="top"><div class="hd"><p class="eyebrow">' + esc(dayLabel(todayISO(), true)) + '</p><h1>' + esc(title) + '</h1></div>' +
+      strk + '</header>';
+  }
+  function view() {
+    PC = planCtx(); PLAN = buildPlan(S, PC);
+    var body = tab === 'plan' ? viewToday() : tab === 'matrix' ? viewTasks() : tab === 'focus' ? viewFocusTab() : tab === 'more' ? viewMe() : tab === 'projects' ? viewProjects() : tab === 'life' ? viewLife() : tab === 'stats' ? viewStats() : viewSettings();
+    var fab = S.profile.done && (tab === 'plan' || tab === 'matrix') && !(S.timer && focusOpen) && !capOpen;
+    return header() + body + (S.profile.done ? nav() : '') + (fab ? '<button class="fab' + (S.timer ? ' up' : '') + '" data-act="capopen" aria-label="Ajouter une idée"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>' : '') +
+      minibar() + (capOpen ? capSheet() : '') + (S.timer && focusOpen ? fscreen() : toastHtml());
+  }
+  function render(force) {
+    var keep = {};
+    document.querySelectorAll('[data-keep]').forEach(function (e) { keep[e.id] = e.value; });
+    if (force) Object.keys(force).forEach(function (k) { keep[k] = force[k]; });
+    app.innerHTML = view();
+    document.querySelectorAll('[data-keep]').forEach(function (e) { if (keep[e.id] !== undefined) e.value = keep[e.id]; });
+    document.body.classList.toggle('noscroll', !!((S.timer && focusOpen) || capOpen));
+    wakeSync();
   }
 
   function taskForm() {
@@ -1245,47 +1451,6 @@ details.rest[open] > summary { margin-bottom: 8px; }
       (formErr ? '<p class="err">' + esc(formErr) + '</p>' : '') +
       '<div class="btns"><button type="submit" class="btn primary">' + (editing ? 'Enregistrer' : 'Ajouter la tâche') + '</button><button type="button" class="btn" data-act="cancel">Annuler</button></div></form></section>';
   }
-  function taskRow(t, pd) {
-    var o = openTask === t.id, urg = effUrgent(t, pd);
-    var h = '<div class="item"><div class="line"><button class="chk" aria-pressed="false" aria-label="Terminer : ' + esc(t.title) + '" data-act="done" data-id="' + t.id + '">' + CHECK + '</button>' +
-      '<button class="rowbtn" data-act="topen" data-id="' + t.id + '" aria-expanded="' + o + '"><span class="ti">' + esc(t.title) + '</span><span class="mono sub">' + dur(t.dur) + '</span></button></div>';
-    if (o) {
-      h += '<div class="more"><div class="chips">' + chipsFor(t, pd) + '</div>' + (t.cue ? '<p class="cue">Où : ' + esc(t.cue) + '</p>' : '') + (t.postponed ? '<span class="badge">Reportée ' + t.postponed + ' fois</span>' : '') +
-        '<div class="btns"><button class="tg" aria-pressed="' + (t.i === true) + '" data-act="tgi" data-id="' + t.id + '">Important</button><button class="tg" aria-pressed="' + urg + '" data-act="tgu" data-id="' + t.id + '">Urgent</button>' +
-        '<button class="tg" aria-pressed="' + starred(t, tomorrowISO()) + '" data-act="star" data-id="' + t.id + '">★ Demain</button></div>' +
-        '<div class="btns"><button class="btn small primary" data-act="focus" data-id="' + t.id + '">Focus</button><button class="btn small" data-act="edit" data-id="' + t.id + '">Modifier</button>' + delBtn('del', t.id, 'Supprimer', true) + '</div></div>';
-    }
-    return h + '</div>';
-  }
-  function viewMatrix() {
-    var pd = PC.pd, td = PC.today;
-    var open = S.tasks.filter(function (t) { return !t.done && !isHeld(t, td); });
-    var inbox = open.filter(unsorted);
-    var held = S.tasks.filter(function (t) { return !t.done && isHeld(t, td); });
-    var h = '<section class="group"><h2>Tes tâches</h2></section>' + noticeHtml();
-    h += '<form class="quick" id="quickform" autocomplete="off"><input type="text" id="quick" data-keep aria-label="Ajouter une tâche" placeholder="Ajouter une tâche…"><button type="submit" class="btn primary">Ajouter</button></form>';
-    h += '<p class="hint">Écris une phrase : je trouve la catégorie, la durée, l’importance et la date. Exemple : Appeler Martin demain 15 min</p>';
-    if (formOpen || editing) h += taskForm(); else h += '<div class="btns"><button class="btn ghost" data-act="newtask">+ Tâche détaillée</button></div>';
-    if (inbox.length) {
-      h += '<section class="panel"><div class="row"><h3 class="title">À trier</h3><span class="mono sub">' + inbox.length + '</span></div><p class="hint">Important : fait avancer ce qui compte pour toi. Urgent : une échéance proche.</p>' + inbox.map(function (t) {
-        var needU = t.u === null && !t.due;
-        return '<div class="item"><div class="row"><h3>' + esc(t.title) + '</h3><span class="mono sub">' + dur(t.dur) + '</span></div>' +
-          '<div class="ask"><span class="lab">Important ?</span>' + seg('i', [['1', 'Oui'], ['0', 'Non']], t.i === null ? '' : (t.i ? '1' : '0'), 'seti').replace(/data-act="seti"/g, 'data-act="seti" data-id="' + t.id + '"') + '</div>' +
-          (needU ? '<div class="ask"><span class="lab">Urgent ?</span>' + seg('u', [['1', 'Oui'], ['0', 'Non']], '', 'setu').replace(/data-act="setu"/g, 'data-act="setu" data-id="' + t.id + '"') + '</div>' : '') +
-          '<div class="btns">' + delBtn('del', t.id, 'Supprimer', true) + '</div></div>';
-      }).join('') + '</section>';
-    }
-    [1, 2, 3, 4].forEach(function (q) {
-      var items = open.filter(function (t) { return !unsorted(t) && quad(t, pd) === q; }).sort(function (a, b) { return score(b, S.ctx, pd) - score(a, S.ctx, pd); });
-      h += '<section class="group q' + q + '"><div class="qh"><i></i><h3>' + QUAD[q].n + ' <span class="d">· ' + QUAD[q].d + '</span></h3><span class="cnt">' + items.length + '</span></div>' +
-        (items.length ? items.map(function (t) { return taskRow(t, pd); }).join('') : '<p class="hint">' + (q === 1 ? 'Rien d’urgent et important. Respire.' : q === 2 ? 'Ajoute ici ce qui te fait avancer sur le long terme.' : q === 3 ? 'Aucune interruption à déléguer.' : 'Rien à éliminer.') + '</p>') + '</section>';
-    });
-    if (held.length) h += '<details class="panel"><summary>Plus tard ou en pause · ' + held.length + '</summary>' + held.map(function (t) {
-      return '<div class="item"><div class="row"><h3>' + esc(t.title) + '</h3><span class="mono sub">' + dur(t.dur) + '</span></div><span class="hint">' + (t.hold && t.hold > td ? 'Réapparaît le ' + esc(dayLabel(t.hold)) : 'Projet en pause ou clos') + '</span><div class="btns"><button class="btn small" data-act="edit" data-id="' + t.id + '">Modifier</button>' + delBtn('del', t.id, 'Supprimer', true) + '</div></div>';
-    }).join('') + '</details>';
-    return h;
-  }
-
   function habitRow(x) {
     var done = !!hdays(x.id)[todayISO()], st = hstreak(x.id);
     return '<div class="hrow"><button class="chk" aria-pressed="' + done + '" aria-label="Fait aujourd’hui : ' + esc(x.name) + '" data-act="htog" data-id="' + x.id + '">' + CHECK + '</button><div><h3>' + esc(x.name) + '</h3>' +
@@ -1449,7 +1614,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
     else h += '<p class="hint">3 victoires : c’est complet.</p>';
     h += '<div class="f">Tes priorités de demain (3 maximum)</div>';
     var cands = open.filter(function (t) { return !isHeld(t, tom); }).sort(function (a, b) { return score(b, S.ctx, tom) - score(a, S.ctx, tom); }).slice(0, 8);
-    if (!cands.length) h += '<p class="hint">Aucune tâche ouverte. Écris-en une à l’agent.</p>';
+    if (!cands.length) h += '<p class="hint">Aucune tâche ouverte. Appuie sur + pour en ajouter une.</p>';
     else h += cands.map(function (t) {
       return '<div class="row sw-row"><span>' + esc(t.title) + ' <span class="mono sub">' + dur(t.dur) + '</span></span><button class="tg" aria-pressed="' + (t.starDay === tom) + '" data-act="star" data-id="' + t.id + '">★</button></div>';
     }).join('');
@@ -1460,7 +1625,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
     S.flog.forEach(function (e) { if (e.d >= ws) { fwTot += e.min; fwN++; } });
     for (q7 = 0; q7 < 7; q7++) { dd7 = addDays(ws, q7); m7 = 0; S.flog.forEach(function (e) { if (e.d === dd7) m7 += e.min; }); per7.push(m7); mxd = Math.max(mxd, m7); }
     h += '<section class="panel"><h3 class="title">Focus cette semaine</h3>';
-    if (!fwTot) h += '<p class="sub">Lance un focus depuis l’agent : tes minutes de concentration apparaîtront ici.</p>';
+    if (!fwTot) h += '<p class="sub">Lance un focus depuis l’onglet Focus : tes minutes de concentration apparaîtront ici.</p>';
     else h += '<p><b>' + dur(fwTot) + '</b> de concentration · ' + fwN + ' session' + (fwN > 1 ? 's' : '') + '</p><div class="hist">' + per7.map(function (m, ix) { return '<div class="' + (addDays(ws, ix) === td ? 'hot' : '') + '" style="height:' + Math.max(2, Math.round(m / mxd * 100)) + '%" title="' + m + ' min"></div>'; }).join('') + '</div><div class="hlab"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>';
     h += '</section>';
     var cal = H.filter(function (e) { return e.act > 0 && e.dur > 0; }), sd = 0, sa = 0;
@@ -1575,63 +1740,6 @@ details.rest[open] > summary { margin-bottom: 8px; }
     return h;
   }
 
-  function nav() {
-    var items = [['plan', 'Agent'], ['matrix', 'Tâches'], ['more', 'Plus']], cur = (tab === 'plan' || tab === 'matrix') ? tab : 'more';
-    return '<nav class="nav" aria-label="Navigation">' + items.map(function (t) {
-      return '<button data-act="tab" data-id="' + t[0] + '"' + (cur === t[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS[t[0]] + '</svg><span>' + t[1] + '</span></button>';
-    }).join('') + '</nav>';
-  }
-  function dock() {
-    return '<form class="dock" id="dock" autocomplete="off"><div class="in"><div class="dchips">' + DOCK_CHIPS.map(function (c) {
-      return '<button type="button" data-act="' + c[2] + '" data-v="' + esc(c[1]) + '">' + esc(c[0]) + '</button>';
-    }).join('') + '</div><div class="dline"><input type="text" id="dock-text" data-keep enterkeyhint="send" aria-label="Écris à l’agent" placeholder="Écris une tâche ou une demande…">' +
-      '<button type="submit" class="send" aria-label="Envoyer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div></form>';
-  }
-  function view() {
-    PC = planCtx(); PLAN = buildPlan(S, PC);
-    var sub = tab === 'projects' || tab === 'life' || tab === 'stats' || tab === 'settings';
-    var body = tab === 'plan' ? viewAgent() : tab === 'matrix' ? viewMatrix() : tab === 'more' ? viewMore() : tab === 'projects' ? viewProjects() : tab === 'life' ? viewLife() : tab === 'stats' ? viewStats() : viewSettings();
-    return '<header class="top"><div class="hd"><h1>Cadence</h1><p>' + esc(dayLabel(todayISO(), true)) + '</p></div></header>' +
-      (sub ? '<button class="btn ghost back" data-act="tab" data-id="more">← Plus</button>' : '') + body + nav() + (tab === 'plan' && S.profile.done ? dock() : '') + minibar() + (S.timer && focusOpen ? fscreen() : '');
-  }
-  function render(force) {
-    var keep = {};
-    document.querySelectorAll('[data-keep]').forEach(function (e) { keep[e.id] = e.value; });
-    if (force) Object.keys(force).forEach(function (k) { keep[k] = force[k]; });
-    app.innerHTML = view();
-    document.querySelectorAll('[data-keep]').forEach(function (e) { if (keep[e.id] !== undefined) e.value = keep[e.id]; });
-    document.body.classList.toggle('agent', tab === 'plan' && S.profile.done);
-    document.body.classList.toggle('noscroll', !!(S.timer && focusOpen));
-    wakeSync();
-  }
-  /* Envoie une phrase à l'agent : demande connue, sinon nouvelle tâche. */
-  function handleInput(raw, fromChip) {
-    var text = String(raw || '').trim(); if (!text || !S.profile.done) return;
-    var last = S.chat[S.chat.length - 1];
-    say('u', text);
-    if (!fromChip && last && last.r === 'a' && last.aw === 'win') {
-      clearTids();
-      if (S.wins.filter(function (w) { return w.d === todayISO(); }).length >= 3) say('a', 'Tu as déjà noté 3 victoires aujourd’hui : c’est complet. Bonne soirée !');
-      else { S.wins.push({ d: todayISO(), text: text.slice(0, 120) }); if (S.wins.length > 400) S.wins = S.wins.slice(-400); say('a', 'Noté. Bravo pour cette victoire. Bonne soirée !', '', { pl: [['Organise demain', 'organise demain']] }); }
-      notice = null; save(); render({ 'dock-text': '' }); window.scrollTo(0, 0); return;
-    }
-    var m = text.match(/^\s*(?:ajoute|ajouter|nouvelle t[aâ]che|t[aâ]che)\b\s*:?\s*([\s\S]+)$/i);
-    var r = m ? null : runCommand(text);
-    clearTids(); catFor = '';
-    if (r) say('a', r.text, '', r);
-    else {
-      resetAsk();
-      var res = [];
-      (m ? m[1] : text).split(/[;\n]+/).map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 10).forEach(function (p) { var x = addSentence(p, true); if (x) res.push(x); });
-      if (!res.length) say('a', 'Je n’ai pas compris. Écris une tâche, par exemple « Appeler Paul demain 15 min », ou « aide ».');
-      else if (res.length === 1) {
-        var one = res[0];
-        if (one.tid) { var t1 = byId(one.tid); say('a', taskReply(t1), one.tid); } else say('a', one.text);
-      } else say('a', res.length + ' ajoutées : ' + res.map(function (x) { return x.short; }).join(' · ') + '. Je les ai rangées et placées dans ta journée. Corrige-les dans Tâches si besoin.');
-    }
-    notice = null; save(); render({ 'dock-text': '' }); window.scrollTo(0, 0);
-  }
-
   /* ---------- Export, agenda ---------- */
   function download(name, text, type) {
     try {
@@ -1707,8 +1815,8 @@ details.rest[open] > summary { margin-bottom: 8px; }
     e.preventDefault();
     var id = e.target.id;
     if (id === 'taskform') submitTask();
-    else if (id === 'dock') { var di = document.getElementById('dock-text'); handleInput(di ? di.value : ''); }
-    else if (id === 'quickform') submitLines('quick');
+    else if (id === 'capform') submitCap();
+    else if (id === 'winform') addWin();
     else if (id === 'projform') submitProject();
   });
 
@@ -1721,30 +1829,33 @@ details.rest[open] > summary { margin-bottom: 8px; }
       if (armKey === key) { armKey = ''; clearTimeout(armTimer); return true; }
       armKey = key; clearTimeout(armTimer); armTimer = setTimeout(function () { armKey = ''; render(); }, 4000); render(); return false;
     }
-    if (a === 'tab') { if (id === 'projects' && tab === 'projects') projOpen = null; tab = id; formErr = ''; catFor = ''; projForm = false; projEdit = null; notice = null; render(); window.scrollTo(0, 0); return; }
+    if (a === 'tab') { if (id === 'projects' && tab === 'projects') projOpen = null; tab = id; capOpen = false; formErr = ''; catFor = ''; projForm = false; projEdit = null; notice = null; render(); window.scrollTo(0, 0); return; }
     if (a === 'dismiss') { notice = null; render(); return; }
-    if (a === 'chip') { handleInput(v, true); return; }
-    if (a === 'fill') { render({ 'dock-text': v }); var fi = document.getElementById('dock-text'); if (fi) { try { fi.focus(); } catch (e) {} } return; }
-    if (a === 'obans') {
-      var st = S.profile.step || 0, lab = v;
-      if (st === 0) S.ctx.start = v;
-      else if (st === 1) { if (toMin(v) < toMin(S.ctx.start) + 120) return; S.ctx.end = v; }
-      else { S.ctx.peak = v; lab = ({ matin: 'Le matin', aprem: 'L’après-midi', soir: 'Le soir' })[v] || v; }
-      S.profile.ans.push(lab); S.profile.step = st + 1;
-      if (S.profile.step >= 3) {
-        S.profile.done = true; S.chat = []; S.daily.checkin = todayISO();
-        say('a', 'C’est réglé : journée de ' + S.ctx.start + ' à ' + S.ctx.end + ', ' + ({ matin: 'meilleur moment le matin', aprem: 'meilleur moment l’après-midi', soir: 'meilleur moment le soir' })[S.ctx.peak] + '. Tu pourras changer ça dans Plus, Réglages. Écris-moi maintenant ta première tâche, en une phrase.');
-      }
-      save(); render(); window.scrollTo(0, 0); return;
+    if (a === 'capopen') { capOpen = true; capErr = ''; render(); var ct = document.getElementById('cap-text'); if (ct) { try { ct.focus(); } catch (e) {} } return; }
+    if (a === 'capclose') { capOpen = false; capErr = ''; render(); return; }
+    if (a === 'toastundo') {
+      var u = toast && toast.undo;
+      if (u) { S.tasks = S.tasks.filter(function (x) { return u.t.indexOf(x.id) < 0; }); S.events = S.events.filter(function (x) { return (u.e || []).indexOf(x.id) < 0; }); resetAsk(); save(); }
+      toast = null; clearTimeout(toastT); render(); return;
     }
-    if (a === 'cfix') {
-      t = byId(id); if (!t) return;
-      if (f === 'cat') { catFor = (catFor === id ? '' : id); render(); return; }
-      if (f === 'undo') { S.tasks = S.tasks.filter(function (x) { return x.id !== id; }); catFor = ''; clearTids(); say('a', 'C’est annulé : « ' + t.title + ' » est supprimée.'); save(); render(); window.scrollTo(0, 0); return; }
-      if (f === 'i') { t.i = (v === '1'); learnFrom(t, 'imp', t.i); clearTids(); say('a', taskReply(t, 'Corrigé') + ' Je m’en souviendrai.', t.id); }
-      else if (f === 'dom') { t.dom = v; if (v) learnFrom(t, 'dom', v); catFor = ''; clearTids(); say('a', taskReply(t, 'Corrigé') + (v ? ' Je m’en souviendrai.' : ''), t.id); }
-      save(); render(); window.scrollTo(0, 0); return;
+    if (a === 'toastedit') { toast = null; clearTimeout(toastT); tab = 'matrix'; tview = 'list'; dfilter = ''; openTask = id; render(); window.scrollTo(0, 0); return; }
+    if (a === 'energy') { S.ctx.energie = v; S.daily.checkin = todayISO(); resetAsk(); save(); render(); return; }
+    if (a === 'win') { ask = { i: 0, win: +v }; render(); return; }
+    if (a === 'tview') { tview = v; render(); return; }
+    if (a === 'dfil') { dfilter = v; render(); return; }
+    if (a === 'fsel') { fsel = id; render(); return; }
+    if (a === 'fstart') {
+      if (S.timer) { focusOpen = true; render(); return; }
+      audioUnlock(); var ft2 = id ? byId(id) : null;
+      if (v === '2') startTimer('start', id || '', 2, 0); else startTimer('work', id || '', ft2 ? taskMinutes(ft2) : S.pomo.work, 0);
+      render(); return;
     }
+    if (a === 'obsel') {
+      if (f === 'start') { S.ctx.start = v; if (toMin(S.ctx.end) < toMin(v) + 240) S.ctx.end = ['17:00', '18:00', '19:00', '20:00', '22:00'].filter(function (x) { return toMin(x) >= toMin(v) + 240; })[0] || '22:00'; }
+      else if (f === 'end') S.ctx.end = v; else if (f === 'peak') S.ctx.peak = v;
+      save(); render(); return;
+    }
+    if (a === 'obdone') { S.profile.done = true; S.daily.checkin = todayISO(); save(); render(); window.scrollTo(0, 0); return; }
     if (a === 'unlearn') { if (!arm()) return; S.learn = { dom: {}, imp: {} }; save(); notice = { warn: false, text: 'L’agent a tout oublié de tes corrections.' }; render(); return; }
     if (a === 'dseg') { draft[f] = (f === 'effort') ? +v : (v === '1'); render(); return; }
     if (a === 'dtog') { draft[f] = !draft[f]; render(); return; }
@@ -1771,7 +1882,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
     }
     if (a === 'seti') { t = byId(id); if (t) { t.i = (v === '1'); save(); render(); } return; }
     if (a === 'setu') { t = byId(id); if (t) { t.u = (v === '1'); save(); render(); } return; }
-    if (a === 'tgi') { t = byId(id); if (t) { t.i = !(t.i === true); save(); render(); } return; }
+    if (a === 'tgi') { t = byId(id); if (t) { t.i = !(t.i === true); learnFrom(t, 'imp', t.i); save(); render(); } return; }
     if (a === 'tgu') { t = byId(id); if (t) { t.u = !effUrgent(t, planCtx().pd); save(); render(); } return; }
     if (a === 'star') {
       t = byId(id); if (!t) return;
@@ -1781,7 +1892,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
       else t.starDay = tom;
       save(); render(); return;
     }
-    if (a === 'done') { notice = markDone(id); resetAsk(); save(); render(); return; }
+    if (a === 'done') { var b0 = snap(); notice = markDone(id); resetAsk(); save(); showToast(celebrate(b0, S.tasks.filter(function (x) { return !x.done; }).length)); render(); return; }
     if (a === 'undo') { undoDone(id); notice = null; save(); render(); return; }
     if (a === 'push') { t = byId(id); if (t && t.due) { t.due = addDays(t.due < PC.pd ? PC.pd : t.due, 1); save(); render(); } return; }
     if (a === 'start' || a === 'focus') {
@@ -1802,18 +1913,8 @@ details.rest[open] > summary { margin-bottom: 8px; }
     if (a === 'fskip') { var T4 = S.timer; if (T4) { S.timer = readyTimer(T4.id, T4.n, 'break'); save(); render(); } return; }
     if (a === 'fmin') { focusOpen = false; render(); return; }
     if (a === 'fopen') { if (S.timer) { focusOpen = true; render(); } return; }
-    if (a === 'fdone') { if (id) notice = markDone(id); if (S.timer) stopTimer(true); focusOpen = false; resetAsk(); save(); render(); return; }
+    if (a === 'fdone') { var b1 = snap(); if (id) notice = markDone(id); if (S.timer) stopTimer(true); focusOpen = false; resetAsk(); save(); showToast(celebrate(b1, S.tasks.filter(function (x) { return !x.done; }).length)); render(); return; }
     if (a === 'fstop') { stopTimer(true); resetAsk(); render(); return; }
-    if (a === 'checkin') {
-      S.daily.checkin = todayISO();
-      if (v) {
-        S.ctx.energie = v;
-        var pcx = planCtx(), Px = buildPlan(S, pcx), nt = Px.blocks.filter(function (x) { return x.type === 'task'; });
-        say('a', 'Énergie réglée sur ' + ENLBL[v].toLowerCase() + '. ' + (nt.length ? 'Aujourd’hui : ' + nt.length + ' tâche' + (nt.length > 1 ? 's' : '') + ' planifiée' + (nt.length > 1 ? 's' : '') + ' (' + dur(Px.work) + '). Je te propose de commencer par « ' + nt[0].o.t.title + ' » à ' + fmt(nt[0].a) + '.' : 'Rien de prévu pour l’instant : dis-moi ce que tu as à faire.'), '', nt.length ? { pl: [['Lancer un focus', 'lance un focus']] } : null);
-      }
-      save(); render(); window.scrollTo(0, 0); return;
-    }
-    if (a === 'awskip') { clearTids(); say('a', 'D’accord. Bonne soirée !'); save(); render(); return; }
     if (a === 'pomo') { S.pomo[f] = +v; save(); render(); return; }
     if (a === 'split') {
       t = byId(id); if (!t) return;
@@ -1828,11 +1929,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
       notice = { warn: false, text: 'Journée clôturée : ' + r.done + ' tâche' + (r.done > 1 ? 's' : '') + ' terminée' + (r.done > 1 ? 's' : '') + ', ' + r.rest + ' reportée' + (r.rest > 1 ? 's' : '') + '. Bonne soirée.' };
       render(); return;
     }
-    if (a === 'wadd') {
-      var wt = (document.getElementById('w-text').value || '').trim(); if (!wt) return;
-      if (S.wins.filter(function (w) { return w.d === todayISO(); }).length >= 3) return;
-      S.wins.push({ d: todayISO(), text: wt }); if (S.wins.length > 400) S.wins = S.wins.slice(-400); save(); render({ 'w-text': '' }); return;
-    }
+    if (a === 'wadd') { addWin(); return; }
     if (a === 'wdel') {
       var todays = S.wins.filter(function (w) { return w.d === todayISO(); }), target = todays[+id];
       if (target) { S.wins.splice(S.wins.indexOf(target), 1); save(); render(); } return;
@@ -1874,7 +1971,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
     if (a === 'showdone') { showDone = !showDone; render(); return; }
     if (a === 'lifetab') { lifeTab = v; formErr = ''; render(); return; }
     if (a === 'dtrack') { S.life.track[id] = !S.life.track[id]; save(); render(); return; }
-    if (a === 'domadd') { tab = 'plan'; render({ 'dock-text': '#' + (DOMTAG[id] || '') + ' ' }); window.scrollTo(0, 0); var dd = document.getElementById('dock-text'); if (dd) { try { dd.focus(); } catch (e) {} } return; }
+    if (a === 'domadd') { tab = 'plan'; capOpen = true; capDraft = '#' + (DOMTAG[id] || '') + ' '; render(); var dd = document.getElementById('cap-text'); if (dd) { try { dd.focus(); dd.setSelectionRange(dd.value.length, dd.value.length); } catch (e) {} } return; }
     if (a === 'visave') {
       ['y1', 'y3', 'y5', 'y10'].forEach(function (k) { var el = document.getElementById('v-' + k); if (el) S.vision[k] = el.value.trim(); });
       save(); notice = { warn: false, text: 'Vision enregistrée.' }; render(); window.scrollTo(0, 0); return;
@@ -1918,7 +2015,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
       var fp = findStep(id); if (!fp || fp.st.done || fp.p.status !== 'active') return;
       if (nextSteps(fp.p).indexOf(fp.st) < 0) return;
       planStep(fp.p, fp.st); save();
-      notice = { warn: false, text: '« ' + fp.st.text + ' » est au plan. Elle apparaît dans ta journée (onglet Agent).' }; render(); return;
+      notice = { warn: false, text: '« ' + fp.st.text + ' » est au plan. Elle apparaît dans ta journée (onglet Aujourd’hui).' }; render(); return;
     }
     if (a === 'sttog') {
       var ft = findStep(id); if (!ft) return;
@@ -1969,6 +2066,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
 
   document.addEventListener('change', function (e) {
     var el = e.target;
+    if (el.dataset && el.dataset.act === 'setdom') { var td0 = byId(el.dataset.id); if (td0) { td0.dom = el.value; if (el.value) learnFrom(td0, 'dom', el.value); save(); render(); } return; }
     if (el.id === 'imp-file') {
       var file = el.files && el.files[0]; if (!file) return;
       var fr = new FileReader();
@@ -1989,6 +2087,9 @@ details.rest[open] > summary { margin-bottom: 8px; }
     S.ctx[k] = (k === 'pause' || k === 'margin') ? +val : val; save(); render();
   });
 
+  document.addEventListener('input', function (e) {
+    if (e.target && e.target.id === 'cap-text') { capDraft = e.target.value; var pv = document.getElementById('cap-prev'); if (pv) pv.innerHTML = capPrevHtml(capDraft); }
+  });
   window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; if (tab === 'settings') render(); });
   window.addEventListener('appinstalled', function () { deferred = null; if (tab === 'settings') render(); });
   document.addEventListener('visibilitychange', function () { if (!document.hidden) { tick(); timerTick(); } wakeSync(); });
@@ -2004,7 +2105,7 @@ details.rest[open] > summary { margin-bottom: 8px; }
   focusOpen = !!S.timer;
   save();
   render();
-  try { if (/[?&]add=1/.test(location.search)) { tab = 'plan'; render(); var ad = document.getElementById('dock-text'); if (ad) ad.focus(); } } catch (e) {}
+  try { if (/[?&]add=1/.test(location.search) && S.profile.done) { tab = 'plan'; capOpen = true; render(); var ad = document.getElementById('cap-text'); if (ad) ad.focus(); } } catch (e) {}
   var sec = 0;
   setInterval(function () { timerTick(); sec++; if (sec % 30 === 0) tick(); }, 1000);
   setTimeout(tick, 1500);
